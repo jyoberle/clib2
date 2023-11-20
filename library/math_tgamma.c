@@ -53,12 +53,10 @@
 double
 tgamma(double x)
 {
-	int gamma_sign;
+	// modified by JOB
     double y;
 
-	y = __lgamma(x,&gamma_sign);
-	if (gamma_sign < 0)
-		y = -y;
+	y = exp(lgamma(x));
 
 	return y;
 }

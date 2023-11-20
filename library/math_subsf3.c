@@ -41,7 +41,7 @@
 
 /****************************************************************************/
 
-float
+__attribute__((externally_visible)) float
 __subsf3(float x,float y)
 {
 	float result;

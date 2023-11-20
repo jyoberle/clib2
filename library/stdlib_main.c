@@ -282,9 +282,17 @@ close_libraries(VOID)
 
 /****************************************************************************/
 
-STATIC VOID ASM
-detach_cleanup(REG(d0, LONG UNUSED unused_return_code),REG(d1, BPTR segment_list))
+// modified by JOB
+STATIC VOID
+detach_cleanup(LONG UNUSED unused_return_code,BPTR segment_list)
 {
+	BPTR seglist;
+
+	__asm volatile ("move.l %%d1,%0\n\t"
+                     : "=a"(seglist)
+                     : /* no input */
+                     : /* no clobbers */);
+
 	#if NOT defined(__amigaos4__)
 	{
 		/* The following trick is necessary only under dos.library V40 and below. */
@@ -299,7 +307,7 @@ detach_cleanup(REG(d0, LONG UNUSED unused_return_code),REG(d1, BPTR segment_list
 			   memory until after the process has been terminated. */
 			Forbid();
 
-			UnLoadSeg(segment_list);
+			UnLoadSeg(seglist);
 		}
 	}
 	#endif /* __amigaos4__ */

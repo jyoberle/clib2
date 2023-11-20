@@ -42,7 +42,8 @@ kgetc(VOID)
 
 	do
 		result = KMayGetChar();
-	while(result < 0);
+	//while(result < 0);
+	while(result == 0xFF || result < 0); // modified by JOB : looks like some versions of KMayGetChar only return -1 as a char
 
 	return(result);
 }

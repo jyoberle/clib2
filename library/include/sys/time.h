@@ -121,7 +121,7 @@ struct timeval
 /****************************************************************************/
 
 #ifndef tv_sec
-#define tv_sec tv_secs
+//#define tv_sec tv_secs // modified by JOB
 #endif /* tv_sec */
 
 #ifndef tv_usec

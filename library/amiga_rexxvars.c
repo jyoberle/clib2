@@ -51,6 +51,8 @@
 #include <rexx/rxslib.h>
 #include <rexx/errors.h>
 
+#define ASM __asm
+
 /****************************************************************************/
 
 /* This is used by the stub function prototypes. The ARexx header files
@@ -310,7 +312,21 @@ _StrcpyN(STRPTR destination,STRPTR source,LONG length)
 /****************************************************************************/
 
 /* struct Environment * a0,APTR block a1,LONG d0 */
-asm("
+// moodified by JOB
+VOID _FreeSpace(struct Environment * env,APTR mem,LONG size)
+{
+	register volatile struct Environment* _a0 ASM("a0") = env;
+	register volatile APTR                _a1 ASM("a1") = mem;
+	register volatile LONG                _d0 ASM("d0") = size;
+	register volatile APTR                _a6 ASM("a6") = RexxSysBase;
+	register volatile LONG                _d1 ASM("d1");
+	__asm volatile (
+		"jsr -120( %%a6)\n"
+	: "=r"(_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a6)
+	: "r"(_a0),"r"(_a1),"r"(_d0),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+}
+/*asm("
 
 	.text
 	.even
@@ -319,9 +335,9 @@ asm("
 
 __FreeSpace:
 
-	moveal	sp@(4),a0
-	moveal	sp@(8),a1
-	movel	sp@(12),d0
+	moveal	sp@(4),a0 = env
+	moveal	sp@(8),a1 = mem 
+	movel	sp@(12),d0 = size
 
 	movel	a6,sp@-
 	moveal	"A4(_RexxSysBase)",a6
@@ -330,12 +346,27 @@ __FreeSpace:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 
 /* struct Environment * a0,LONG d0 : APTR d0 */
-asm("
+// moodified by JOB
+APTR _GetSpace(struct Environment * env,LONG size)
+{
+	register volatile struct Environment* _a0 ASM("a0") = env;
+	register volatile LONG                _d0 ASM("d0") = size;
+	register volatile struct Library *    _a6 ASM("a6") = RexxSysBase;
+	register volatile LONG                _d1 ASM("d1");
+	register volatile LONG                _a1 ASM("a1");
+	__asm volatile (
+		"jsr -114(%%a6)\n"
+	: "=r"(_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a6)
+	: "r"(_a0),"r"(_d0),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+	return((APTR)_d0);
+}
+/*asm("
 
 	.text
 	.even
@@ -354,12 +385,29 @@ __GetSpace:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 
 /* STRPTR a0 : LONG d0, LONG d1 */
-asm("
+// moodified by JOB
+LONG _IsSymbol(STRPTR name,LONG * symbol_length_ptr)
+{
+	register volatile STRPTR           _a0 ASM("a0") = name;
+	register volatile LONG *           _a2 ASM("a2") = symbol_length_ptr;
+	register volatile LONG             _d0 ASM("d0");
+	register volatile struct Library * _a6 ASM("a6") = RexxSysBase;
+	register volatile LONG             _d1 ASM("d1");
+	register volatile LONG             _a1 ASM("a1");
+	__asm volatile (
+		"jsr -102(%%a6)\n"
+		"move.l %%d1,(%%a2)\n" 
+	: "=r"(_d0),"=r" (_d1),"=r"(_a0),"=r"(_a1),"=r"(_a2),"=r"(_a6)
+	: "r"(_a0),"r"(_a2),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+	return(_d0);
+}
+/*asm("
 
 	.text
 	.even
@@ -380,12 +428,28 @@ __IsSymbol:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 
 /* struct RexxTask * a0 : struct Environment * a0 */
-asm("
+// moodified by JOB
+VOID _CurrentEnv(struct RexxTask *task,struct Environment ** environment_ptr)
+{
+	register volatile struct RexxTask *     _a0 ASM("a0") = task;
+	register volatile struct Environment ** _a2 ASM("a2") = (volatile struct Environment **)environment_ptr;
+	register volatile struct Library *      _a6 ASM("a6") = RexxSysBase;
+	register volatile LONG                  _a1 ASM("a1");
+	register volatile LONG                  _d0 ASM("d0");
+	register volatile LONG                  _d1 ASM("d1");
+	__asm volatile (
+		"jsr -108(%%a6)\n"
+		"move.l %%a0,(%%a2)\n" 
+	: "=r"(_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a2),"=r"(_a6)
+	: "r"(_a0),"r"(_a2),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+}
+/*asm("
 
 	.text
 	.even
@@ -406,12 +470,31 @@ __CurrentEnv:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 
 /* struct Environment * a0,struct NexxStr * a1,struct NexxStr * d0,struct Node * d1 : struct NexxStr * a0, LONG d1 */
-asm("
+// moodified by JOB
+struct Node * _FetchValue(struct Environment * env,struct NexxStr * stem,struct NexxStr * compound,struct Node *symbol_table_node,LONG * is_literal_ptr,struct NexxStr ** value_ptr)
+{
+	register volatile struct Environment * _a0 ASM("a0") = env;
+	register volatile struct NexxStr *     _a1 ASM("a1") = stem;
+	register volatile struct NexxStr *     _d0 ASM("d0") = compound;
+	register volatile struct Node *        _d1 ASM("d1") = symbol_table_node;
+	register volatile LONG *               _a2 ASM("a2") = is_literal_ptr;
+	register volatile struct NexxStr **    _a3 ASM("a3") = (volatile struct NexxStr **)value_ptr;
+	register volatile struct Library *     _a6 ASM("a6") = RexxSysBase;
+	__asm volatile (
+		"jsr -72(%%a6)\n"
+		"move.l %%a0,(%%a2)\n" 
+		"move.l %%d1,(%%a3)\n"
+	: "=r"(_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a2),"=r"(_a3),"=r"(_a6)
+	: "r"(_a0),"r"(_a1),"r"(_d0),"r"(_d1),"r"(_a2),"r"(_a3),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+	return((struct Node *)_d0);
+}
+/*asm("
 
 	.text
 	.even
@@ -437,12 +520,27 @@ __FetchValue:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 
 /* struct Environment a0, struct NexxStr *a1, struct NexxStr * d0 : struct Node * d0 */
-asm("
+// moodified by JOB
+struct Node * _EnterSymbol(struct Environment * env,struct NexxStr * stem,struct NexxStr * compound)
+{
+	register volatile struct Environment * _a0 ASM("a0") = env;
+	register volatile struct NexxStr *     _a1 ASM("a1") = stem;
+	register volatile struct NexxStr *     _d0 ASM("d0") = compound;
+	register volatile struct Library *     _a6 ASM("a6") = RexxSysBase;
+	register volatile LONG                 _d1 ASM("d1");
+	__asm volatile (
+		"jsr -66(%%a6)\n"
+	: "=r" (_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a6)
+	: "r"(_a0),"r"(_a1),"r"(_d0),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+	return((struct Node *)_d0);
+}
+/*asm("
 
 	.text
 	.even
@@ -462,12 +560,26 @@ __EnterSymbol:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 
 /* struct Environment *a0, struct NexxStr *a1, struct Node * d0 */
-asm("
+// moodified by JOB
+VOID _SetValue(struct Environment * env,struct NexxStr * value,struct Node * symbol_table_node)
+{
+	register volatile struct Environment * _a0 ASM("a0") = env;
+	register volatile struct NexxStr *     _a1 ASM("a1") = value;
+	register volatile struct Node *        _d0 ASM("d0") = symbol_table_node;
+	register volatile struct Library *     _a6 ASM("a6") = RexxSysBase;
+	register volatile LONG                 _d1 ASM("d1");
+	__asm volatile (
+		"jsr -84(%%a6)\n"
+	: "=r"(_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a6)
+	: "r"(_a0),"r"(_a1),"r"(_d0),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+}
+/*asm("
 
 	.text
 	.even
@@ -487,12 +599,27 @@ __SetValue:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 
 /* STRPTR a0,STRPTR a1,LONG d0 : ULONG d0 */
-asm("
+// moodified by JOB
+ULONG _StrcpyN(STRPTR destination,STRPTR source,LONG length)
+{
+	register volatile STRPTR           _a0 ASM("a0") = destination;
+	register volatile STRPTR           _a1 ASM("a1") = source;
+	register volatile LONG             _d0 ASM("d0") = length;
+	register volatile struct Library * _a6 ASM("a6") = RexxSysBase;
+	register volatile LONG             _d1 ASM("d1");
+	__asm volatile (
+		"jsr -270(%%a6)\n"
+	: "=r" (_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a6)
+	: "r"(_a0),"r"(_a1),"r"(_d0),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+	return(_d0);
+}
+/*asm("
 
 	.text
 	.even
@@ -512,7 +639,7 @@ __StrcpyN:
 
 	rts
 
-");
+");*/
 
 /****************************************************************************/
 

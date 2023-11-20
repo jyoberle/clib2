@@ -72,24 +72,13 @@ extern double __floor(double x);
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubBasBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubBasBase
-	.globl	___floor
-
-___floor:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeDoubBasBase)",a6
-	moveml	sp@(8),d0/d1
-	jsr		a6@(-90:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) double __floor(double a)
+{
+	return(IEEEDPFloor(a));
+}
 
 /****************************************************************************/
 
@@ -125,13 +114,13 @@ __floor(double x)
 	int rounding_mode, round_down;
 	double result;
 
-	__asm __volatile ("fmove%.l fpcr,%0"
+	__asm __volatile ("fmove%.l %%fpcr,%0"
 	                  : "=dm" (rounding_mode)
 	                  : /* no inputs */ );
 
 	round_down = (rounding_mode & ~0x10) | 0x20;
 
-	__asm __volatile ("fmove%.l %0,fpcr"
+	__asm __volatile ("fmove%.l %0,%%fpcr"
 	                  : /* no outputs */
 	                  : "dmi" (round_down));
 
@@ -139,7 +128,7 @@ __floor(double x)
 	                  : "=f" (result)
 	                  : "f" (x));
 
-	__asm __volatile ("fmove%.l %0,fpcr"
+	__asm __volatile ("fmove%.l %0,%%fpcr"
 	                  : /* no outputs */
 	                  : "dmi" (rounding_mode));
 

@@ -63,24 +63,13 @@ extern double __fabs(double x);
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubBasBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubBasBase
-	.globl	___fabs
-
-___fabs:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeDoubBasBase)",a6
-	moveml	sp@(8),d0/d1
-	jsr		a6@(-54:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) double __fabs(double a)
+{
+	return(IEEEDPAbs(a));
+}
 
 /****************************************************************************/
 

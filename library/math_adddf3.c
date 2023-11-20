@@ -51,24 +51,13 @@
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubBasBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubBasBase
-	.globl	___adddf3
-
-___adddf3:
-
-	moveml	d2/d3/a6,sp@-
-	movel	"A4(_MathIeeeDoubBasBase)",a6
-	moveml	sp@(16),d0/d1/d2/d3
-	jsr		a6@(-66:W)
-	moveml	sp@+,d2/d3/a6
-	rts
-
-");
+__attribute__((externally_visible)) double __adddf3(double a,double b)
+{
+	return(IEEEDPAdd(a,b));
+}
 
 /****************************************************************************/
 

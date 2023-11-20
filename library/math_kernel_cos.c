@@ -46,7 +46,7 @@
 
 /****************************************************************************/
 
-#if defined(FLOATING_POINT_SUPPORT) && defined(PPC_FLOATING_POINT_SUPPORT)
+#if defined(FLOATING_POINT_SUPPORT) /*&& defined(PPC_FLOATING_POINT_SUPPORT)*/ // modified by JOB
 
 /****************************************************************************/
 

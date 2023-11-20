@@ -80,17 +80,27 @@
 
 #else
 
-#define CONSTRUCTOR(name,pri) \
+// modified by JOB
+//#define CONSTRUCTOR(name,pri) \
 	asm(".stabs \"___INIT_LIST__\",22,0,0,___ctor_" #name); \
 	asm(".stabs \"___INIT_LIST__\",20,0,0," #pri); \
 	VOID __ctor_##name##(VOID); \
 	VOID __ctor_##name##(VOID)
 
-#define DESTRUCTOR(name,pri) \
+#define CONSTRUCTOR(name,pri) \
+	VOID __ctor_##name(VOID); \
+	VOID __ctor_##name(VOID)	
+
+// modified by JOB
+//#define DESTRUCTOR(name,pri) \
 	asm(".stabs \"___EXIT_LIST__\",22,0,0,___dtor_" #name); \
 	asm(".stabs \"___EXIT_LIST__\",20,0,0," #pri); \
 	VOID __dtor_##name##(VOID); \
 	VOID __dtor_##name##(VOID)
+
+#define DESTRUCTOR(name,pri) \
+	VOID __dtor_##name(VOID); \
+	VOID __dtor_##name(VOID)	
 
 #endif /* __amigaos4__ */
 

@@ -64,46 +64,11 @@ static const float TWO23[2]={
 long int
 lrintf(float x)
 {
-  LONG j0,sx;
-  ULONG i0;
-  float t;
-  volatile float w;
-  long int result;
-
-  GET_FLOAT_WORD(i0,x);
-
-  /* Extract sign bit. */
-  sx = (i0 >> 31);
-
-  /* Extract exponent field. */
-  j0 = ((i0 & 0x7f800000) >> 23) - 127;
-  
-  if (j0 < (int)(sizeof (long int) * 8) - 1)
-    {
-      if (j0 < -1)
-        return 0;
-      else if (j0 >= 23)
-        result = (long int) ((i0 & 0x7fffff) | 0x800000) << (j0 - 23);
-      else
-        {
-          w = TWO23[sx] + x;
-          t = w - TWO23[sx];
-          GET_FLOAT_WORD (i0, t);
-          /* Detect the all-zeros representation of plus and
-             minus zero, which fails the calculation below. */
-          if ((i0 & ~(1 << 31)) == 0)
-              return 0;
-          j0 = ((i0 >> 23) & 0xff) - 0x7f;
-          i0 &= 0x7fffff;
-          i0 |= 0x800000;
-          result = i0 >> (23 - j0);
-        }
-    }
-  else
-    {
-      return (long int) x;
-    }
-  return sx ? -result : result;
+  // modified by JOB
+  // Previous code was giving lrintf(1969.9999f) = 1970L but lrint(1969.9999) = 1969L, and thus remquo(12.5,2.2,&quotient) was failing with quotient = 5
+  // Since fegetround is not implemented, we can take the assumption that lrint works with FE_TONEAREST and thus replace it with lround
+  // We also change lrintf to work with lroundf for coherency, although earlier version gives lrintf(1969.1976f) = 1969L and lrintf(1969.9999f) = 1970L
+  return(lroundf(x));
 }
 
 /****************************************************************************/

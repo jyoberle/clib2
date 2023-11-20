@@ -56,15 +56,16 @@ VOID __begin_io(struct IORequest * ior);
 
 #if defined(__GNUC__)
 
+// modified by JOB
 #define __begin_io(ior) ({ \
   struct IORequest * _BeginIO_ior = (ior); \
   { \
   register struct Library * const __BeginIO__bn __asm("a6") = (struct Library *) (DeviceBase);\
   register struct IORequest * __BeginIO_ior __asm("a1") = (_BeginIO_ior); \
-  __asm volatile ("jsr a6@(-30:W)" \
+  __asm volatile ("jsr %%a6@(-30:W)" \
   : \
   : "r"(__BeginIO__bn), "r"(__BeginIO_ior)  \
-  : "d0", "d1", "a0", "a1", "fp0", "fp1", "cc", "memory"); \
+  : "d0", "d1", "a0", "fp0", "fp1", "cc", "memory"); \
   } \
 })
 

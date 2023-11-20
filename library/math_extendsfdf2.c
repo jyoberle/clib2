@@ -51,24 +51,13 @@
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubTransBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubTransBase
-	.globl	___extendsfdf2
-
-___extendsfdf2:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeDoubTransBase)",a6
-	movel	sp@(8),d0
-	jsr		a6@(-108:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) double __extendsfdf2(float a)
+{
+	return(IEEEDPFieee(a));
+}
 
 /****************************************************************************/
 

@@ -72,24 +72,13 @@ double __asin(double x);
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubTransBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubTransBase
-	.globl	___asin
-
-___asin:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeDoubTransBase)",a6
-	moveml	sp@(8),d0/d1
-	jsr		a6@(-114:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) double __asin(double a)
+{
+	return(IEEEDPAsin(a));
+}
 
 /****************************************************************************/
 

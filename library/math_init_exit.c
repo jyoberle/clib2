@@ -80,6 +80,9 @@ float	NOCOMMON __nan;
 
 float	NOCOMMON __huge_val_float;
 double	NOCOMMON __huge_val;
+#if defined(USE_LONG_DOUBLE)
+long double NOCOMMON __huge_val_long_double; // added by JOB
+#endif
 
 /****************************************************************************/
 

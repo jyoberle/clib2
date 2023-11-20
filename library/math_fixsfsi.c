@@ -41,7 +41,7 @@
 
 /****************************************************************************/
 
-signed long
+__attribute__((externally_visible)) signed long
 __fixsfsi(float x)
 {
 	signed long result;

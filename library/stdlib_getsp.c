@@ -45,19 +45,20 @@
 
 /****************************************************************************/
 
-asm("					\n\
-						\n\
-	.text				\n\
-	.even				\n\
-						\n\
-	.globl	___get_sp	\n\
-						\n\
-___get_sp:				\n\
-	movel	sp,d0		\n\
-	addql	#4,d0		\n\
-	rts					\n\
-						\n\
-");
+// modified by JOB
+#define ASM __asm
+
+VOID *__get_sp(VOID)
+{
+	register volatile ULONG _d0            ASM("d0");
+	__asm volatile (
+		"move.l %%sp,%%d0\n"
+		"addql #4,%%d0\n"
+	: "=r"(_d0)
+	: "r"(_d0)
+	: "cc");
+	return((VOID *)_d0);
+}
 
 /****************************************************************************/
 

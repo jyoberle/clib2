@@ -35,22 +35,25 @@
 
 /****************************************************************************/
 #ifndef __PPC__
-asm("                            \n\
-                                 \n\
-	.text                         \n\
-	.even                         \n\
-                                 \n\
-	.globl	___divsi3            \n\
-	.globl	___udivsi4           \n\
-                                 \n\
-| D0.L = D0.L / D1.L signed      \n\
-                                 \n\
-___divsi3:                       \n\
-                                 \n\
-	moveml	sp@(4:W),d0/d1       \n\
-	jbra	___divsi4               \n\
-                                 \n\
-");
+#include <proto/utility.h>
+
+#define ASM __asm
+
+// modified by JOB
+extern struct UtilityBase *UtilityBase;
+
+__attribute__((externally_visible)) LONG __divsi3(LONG dividend,LONG divisor)
+{
+	register volatile LONG _d0                ASM("d0") = dividend; // also contains return value
+	register volatile LONG _d1                ASM("d1") = divisor;
+	register volatile struct UtilityBase * _a0 ASM("a0") = UtilityBase;
+	__asm volatile (
+		"jsr -150(%%a0)\n" // SDivMod32
+	: "=r"(_d0),"=r"(_d1) // the utility.library math routines preserve all	address registers including A0 and A1
+	: "r"(_d0),"r"(_d1),"r"(_a0)
+	: "fp0", "fp1", "cc", "memory");
+	return((LONG)_d0); // quotient in D0
+}
 #else
 __asm ("						\n\
 	 .text						\n\

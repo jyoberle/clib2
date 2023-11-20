@@ -35,9 +35,11 @@
 
 h_SubEntry equ 12
 
-	xdef	_HookEntry
+*	xdef	_HookEntry	modified by JOB
+	xdef	HookEntry
 
-_HookEntry:
+*_HookEntry:	modified by JOB
+HookEntry:
 
 	move.l   a1,-(sp)
 	move.l   a2,-(sp)

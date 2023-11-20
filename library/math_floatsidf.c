@@ -51,24 +51,13 @@
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubBasBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubBasBase
-	.globl	___floatsidf
-
-___floatsidf:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeDoubBasBase)",a6
-	movel	sp@(8),d0
-	jsr		a6@(-36:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) double __floatsidf(LONG a)
+{
+	return(IEEEDPFlt(a));
+}
 
 /****************************************************************************/
 

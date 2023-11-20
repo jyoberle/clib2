@@ -74,12 +74,13 @@ VOID RawPutChar(UBYTE c);
 
 #ifndef __PPC__
 
+// modified by JOB: jsr a6@(-510:W) -> jsr %%a6@(-510:W)
 #define RawMayGetChar() ({ \
   UBYTE _RawMayGetChar__re = \
   ({ \
   register struct Library * const __RawMayGetChar__bn __asm("a6") = SysBase;\
   register UBYTE __RawMayGetChar__re __asm("d0"); \
-  __asm volatile ("jsr a6@(-510:W)" \
+  __asm volatile ("jsr %%a6@(-510:W)" \
   : "=r"(__RawMayGetChar__re) \
   : "r"(__RawMayGetChar__bn) \
   : "d1", "a0", "a1", "fp0", "fp1", "cc", "memory"); \
@@ -88,15 +89,16 @@ VOID RawPutChar(UBYTE c);
   _RawMayGetChar__re; \
 })
 
+// modified by JOB: jsr a6@(-516:W) -> jsr %%a6@(-516:W)
 #define RawPutChar(c) ({ \
   ULONG _RawPutChar_c = (c); \
   { \
   register struct Library * const __RawPutChar__bn __asm("a6") = SysBase;\
   register ULONG __RawPutChar_c __asm("d0") = (_RawPutChar_c); \
-  __asm volatile ("jsr a6@(-516:W)" \
+  __asm volatile ("jsr %%a6@(-516:W)" \
   : \
   : "r"(__RawPutChar__bn), "r"(__RawPutChar_c) \
-  : "d0", "d1", "a0", "a1", "fp0", "fp1", "cc", "memory"); \
+  : "d1", "a0", "a1", "fp0", "fp1", "cc", "memory"); \
   } \
 })
 

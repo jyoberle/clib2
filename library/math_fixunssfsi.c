@@ -41,7 +41,7 @@
 
 /****************************************************************************/
 
-unsigned long
+__attribute__((externally_visible)) unsigned long
 __fixunssfsi(float x)
 {
 	signed long result;

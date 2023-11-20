@@ -44,35 +44,38 @@
 #endif /* SMALL_DATA */
 
 /****************************************************************************/
+#include <proto/utility.h>
 
-asm("
+#define ASM __asm
 
-	.text
-	.even
+// modified by JOB
+extern struct UtilityBase *UtilityBase;
 
-	.globl	___modsi3
+__attribute__((externally_visible)) ULONG __modsi3(ULONG dividend,ULONG divisor)
+{
+	register volatile ULONG _d0                ASM("d0") = dividend;
+	register volatile ULONG _d1                ASM("d1") = divisor; // also contains return value
+	register volatile struct UtilityBase * _a0 ASM("a0") = UtilityBase;
+	__asm volatile (
+		"jsr -150(%%a0)\n" // SDivMod32
+	: "=r"(_d0),"=r"(_d1) // the utility.library math routines preserve all	address registers including A0 and A1
+	: "r"(_d0),"r"(_d1),"r"(_a0)
+	: "fp0", "fp1", "cc", "memory");
+	return((ULONG)_d1); // remainder in D1
+}
 
-| D1.L = D0.L % D1.L signed
-
-___modsi3:
-
-	moveml	sp@(4:W),d0/d1
-	jbsr	___divsi4
-	movel	d1,d0
-	rts
-
-	.globl	___divsi3
-	.globl	___UtilityBase
-
-| D0.L = D0.L / D1.L signed
-
-___divsi3:
-	moveml	sp@(4:W),d0/d1
-___divsi4:
-	movel	"A4(___UtilityBase)",a0
-	jmp		a0@(-150:W)
-
-");
+__attribute__((externally_visible)) ULONG __divsi3(ULONG dividend,ULONG divisor)
+{
+	register volatile ULONG _d0                ASM("d0") = dividend; // also contains return value
+	register volatile ULONG _d1                ASM("d1") = divisor;
+	register volatile struct UtilityBase * _a0 ASM("a0") = UtilityBase;
+	__asm volatile (
+		"jsr -150(%%a0)\n" // SDivMod32
+	: "=r"(_d0),"=r"(_d1) // the utility.library math routines preserve all	address registers including A0 and A1
+	: "r"(_d0),"r"(_d1),"r"(_a0)
+	: "fp0", "fp1", "cc", "memory");
+	return((ULONG)_d0); // quotient in D0
+}
 
 /****************************************************************************/
 

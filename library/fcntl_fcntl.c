@@ -84,7 +84,7 @@ fcntl(int file_descriptor, int cmd, ... /* int arg */ )
 
 	switch(cmd)
 	{
-#if defined(UNIX_PATH_SEMANTICS)
+//#if defined(UNIX_PATH_SEMANTICS) // modified by JOB: directive removed in order for clib to be able to call lockf in unistd_lockf.c
 		case F_GETLK:
 		case F_SETLK:
 		case F_SETLKW:
@@ -134,7 +134,7 @@ fcntl(int file_descriptor, int cmd, ... /* int arg */ )
 			result = OK;
 
 			break;
-#endif /* UNIX_PATH_SEMANTICS */
+//#endif /* UNIX_PATH_SEMANTICS */
 
 		case F_GETFL:
 

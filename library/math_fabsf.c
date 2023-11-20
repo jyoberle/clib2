@@ -63,24 +63,13 @@ extern float __fabsf(float x);
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeSingBasBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeSingBasBase
-	.globl	___fabsf
-
-___fabsf:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeSingBasBase)",a6
-	moveml	sp@(8),d0/d1
-	jsr		a6@(-54:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) float __fabsf(float a)
+{
+	return(IEEESPAbs(a));
+}
 
 /****************************************************************************/
 

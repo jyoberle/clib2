@@ -45,23 +45,15 @@
 
 /****************************************************************************/
 #ifndef __PPC__
-asm("                               \n\
-                                    \n\
-	.text                            \n\
-	.even                            \n\
-                                    \n\
-	.globl	___mulsi3               \n\
-	.globl	___UtilityBase          \n\
-                                    \n\
-| D0 = D0 * D1                      \n\
-                                    \n\
-___mulsi3:                          \n\
-                                    \n\
-	moveml	sp@(4),d0/d1            \n\
-	movel	"A4(___UtilityBase)",a0    \n\
-	jmp		a0@(-138:W)             \n\
-                                    \n\
-");
+#include <proto/utility.h>
+
+// modified by JOB
+extern struct UtilityBase *UtilityBase;
+
+__attribute__((externally_visible)) LONG __mulsi3(LONG Arg1,LONG Arg2)
+{
+     return(SMult32(Arg1,Arg2));
+}
 #else
 __asm("							\n\
     .text						\n\

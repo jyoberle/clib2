@@ -39,18 +39,22 @@
 
 ******************************************************************************
 
-	xref	_SysBase
+*	xref	_SysBase
+	xref	SysBase
 
 ******************************************************************************
 
-	xdef	@setjmp
-	xdef	_setjmp
+* modified by JOB
+*	xdef	@setjmp
+*	xdef	_setjmp
+	xdef	setjmp
 
 @setjmp:
 	move.l	a0,-(sp)			; "save" A0
 	bra.b	l1				; we don't need to load A0 from the stack
 
-_setjmp:
+*_setjmp:
+setjmp:
 	move.l	a0,-(sp)			; save A0
 	move.l	8(sp),a0			; (struct __jmp_buf *) env
 
@@ -59,21 +63,26 @@ l1	move.l	4(sp),JB_RETURNADDRESS(a0)	; remember the return address
 	move.l	(sp)+,JB_A0(a0)			; put the old A0 where it belongs
 	move.l	sp,JB_A7(a0)			; put the old A7 where it belongs
 
-	move.l	_SysBase,a1
+*	move.l	_SysBase,a1
+	move.l	SysBase,a1
 	btst	#AFB_68881,AttnFlags+1(a1)	; is there an FPU installed?
 	beq.b	l2				; skip the following if not
-
-	fmovem.x fp0-fp7,JB_FP0(a0)		; save all floating point registers
+* modified by JOB in case we use 68000 asm compilation
+*	fmovem.x fp0-fp7,JB_FP0(a0)		; save all floating point registers
+	dc.b $f2,$28,$f0,$ff,$00,$40
 
 l2	moveq	#0,d0				; always return 0
 	rts
 
 ******************************************************************************
 
-	xdef	_longjmp
-	xdef	@longjmp
+* modified by JOB
+*	xdef	_longjmp
+	xdef	longjmp
+*	xdef	@longjmp
 
-_longjmp:
+*_longjmp:
+longjmp:
 	move.l	4(sp),a0			; (struct __jmp_buf *) env
 	move.l	8(sp),d0			; (int) status
 @longjmp:
@@ -81,11 +90,13 @@ _longjmp:
 	bne.b	l3
 	moveq	#1,d0				; make sure that the result is always non-zero
 
-l3	move.l	_SysBase,a1
+*l3	move.l	_SysBase,a1
+l3	move.l	SysBase,a1
 	btst	#AFB_68881,AttnFlags+1(a1)	; is there an FPU installed?
 	beq.b	l4				; skip the following if not
-
-	fmovem.x JB_FP0(a0),fp0-fp7
+* modified by JOB in case we use 68000 asm compilation
+*	fmovem.x JB_FP0(a0),fp0-fp7
+	dc.b $f2,$28,$d0,$ff,$00,$40 
 
 l4	movem.l	JB_D1(a0),d1-d7			; restore all data registers
 	movem.l	JB_A1(a0),a1-a7			; restore almost all address registers, except for A0

@@ -41,10 +41,11 @@
 
 /****************************************************************************/
 
-float
-__nesf2(float x,float y)
+// modified by JOB
+LONG
+__attribute__((externally_visible)) __nesf2(float x,float y)
 {
-	float result;
+	LONG result;
 
 	result = IEEESPCmp(x,y);
 

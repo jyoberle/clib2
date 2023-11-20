@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "complex_headers.h": "c",
+        "complex.h": "c",
+        "math_fp_support.h": "c",
+        "math_headers.h": "c",
+        "alib_protos.h": "c",
+        "mathffp_protos.h": "c",
+        "mathieeedoubbas_protos.h": "c",
+        "mathieeedoubtrans.h": "c"
+    }
+}

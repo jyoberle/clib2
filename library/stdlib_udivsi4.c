@@ -45,20 +45,25 @@
 
 /****************************************************************************/
 #ifndef __PPC__
-asm("                                                                     \n\
-                                                                          \n\
-	.text                                                                  \n\
-	.even                                                                  \n\
-                                                                          \n\
-	.globl	___udivsi4                                                    \n\
-	.globl	___UtilityBase                                                \n\
-                                                                          \n\
-___udivsi4:                                                               \n\
-                                                                          \n\
-	movel	"A4(___UtilityBase)",a0                                          \n\
-	jmp		a0@(-156:W)                                                   \n\
-                                                                          \n\
-");
+#include <proto/utility.h>
+
+#define ASM __asm
+
+// modified by JOB
+extern struct UtilityBase *UtilityBase;
+
+__attribute__((externally_visible)) ULONG __udivsi4(ULONG dividend,ULONG divisor)
+{
+	register volatile ULONG _d0                ASM("d0") = dividend; // also contains return value
+	register volatile ULONG _d1                ASM("d1") = divisor;
+	register volatile struct UtilityBase * _a0 ASM("a0") = UtilityBase;
+	__asm volatile (
+		"jsr -156(%%a0)\n" // _LVOUDivMod32
+	: "=r"(_d0),"=r"(_d1) // the utility.library math routines preserve all	address registers including A0 and A1
+	: "r"(_d0),"r"(_d1),"r"(_a0)
+	: "fp0", "fp1", "cc", "memory");
+	return((ULONG)_d0); // quotient in D0
+}
 #else
 __asm("							\n\
     .text						\n\

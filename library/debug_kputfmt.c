@@ -35,7 +35,7 @@
 
 /****************************************************************************/
 
-#if defined(__amigaos4__)
+#if defined(__amigaos4__) || defined(__GNUC__) // modified by JOB
 
 /****************************************************************************/
 
@@ -146,15 +146,34 @@ process_var_args(char *format_string,va_list argument_list,unsigned short * tabl
 
 /****************************************************************************/
 
-#endif /* __amigaos4__ */
+#endif /* __amigaos4__ || __GNUC__ */
 
 /****************************************************************************/
 
+// Modified by JOB
+#if defined(__GNUC__)
+__attribute__((noinline)) VOID raw_put_char(UBYTE  c)
+{
+	register volatile UBYTE _d0 __asm("d0");
+	register volatile LONG  _d1 __asm("d1");
+	register volatile LONG  _a0 __asm("a0");
+	register volatile LONG  _a1 __asm("a1");
+	register volatile struct Library * _a6 __asm("a6") = SysBase;
+	
+	__asm volatile (
+		"move.b %0,%%d0\n"
+		"jsr -516(%%a6)\n" // RawPutChar
+	: "=r" (_d0),"=r"(_d1),"=r"(_a0),"=r"(_a1),"=r"(_a6)
+	: "r"(_d0),"r"(_a6)
+	: "fp0", "fp1", "cc", "memory");
+}
+#else
 STATIC VOID ASM
 raw_put_char(REG(d0,UBYTE c))
 {
 	kputc(c); 
 }
+#endif
 
 /****************************************************************************/
 
@@ -165,7 +184,7 @@ KPutFmt(const char * format_string,va_list argument_list)
 
 	if(format_string != NULL)
 	{
-		#if defined(__amigaos4__)
+		#if defined(__amigaos4__) || defined(__GNUC__) // modified by JOB
 		{
 			size_t num_args;
 
@@ -189,6 +208,6 @@ KPutFmt(const char * format_string,va_list argument_list)
 		{
 			KDoFmt(format_string,(APTR)argument_list,(APTR)raw_put_char,NULL);
 		}
-		#endif /* __amigaos4__ */
+		#endif /* __amigaos4__ || __GNUC__ */
 	}
 }

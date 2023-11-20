@@ -41,7 +41,7 @@
 
 /****************************************************************************/
 
-float
+__attribute__((externally_visible)) float
 __floatsisf(signed long x)
 {
 	float result;

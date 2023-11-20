@@ -54,10 +54,11 @@
 /****************************************************************************/
 
 typedef LONG (* CFUNC)(APTR arg);
+extern LONG call_routine(struct Isrvstr *intr); // modified by JOB
 
 /****************************************************************************/
 
-STATIC LONG INTERRUPT ASM
+/*STATIC LONG INTERRUPT ASM
 call_routine(REG(a1,struct Isrvstr *i))
 {
 	CFUNC p = (CFUNC)i->ccode;
@@ -65,9 +66,11 @@ call_routine(REG(a1,struct Isrvstr *i))
 	(*p)(i->Carg);
 
 	return(0);
-}
+}*/
 
 /****************************************************************************/
+
+extern struct ExecBase *SysBase;
 
 VOID
 AddTOF(struct Isrvstr *i,CFUNC p,APTR arg)

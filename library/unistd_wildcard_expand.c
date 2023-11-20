@@ -106,7 +106,7 @@ __wildcard_quote_parameter(unsigned int parameter)
 
 /****************************************************************************/
 
-static struct AnchorPath * anchor;
+static struct AnchorPath * anchor = NULL; // modified by JOB: set to NULL so that CLIB_DESTRUCTOR(__wildcard_expand_exit) can safely be called
 
 /****************************************************************************/
 

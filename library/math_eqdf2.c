@@ -51,24 +51,13 @@
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubBasBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubBasBase
-	.globl	___eqdf2
-
-___eqdf2:
-
-	moveml	d2/d3/a6,sp@-
-	movel	"A4(_MathIeeeDoubBasBase)",a6
-	moveml	sp@(16),d0/d1/d2/d3
-	jsr		a6@(-42:W)
-	moveml	sp@+,d2/d3/a6
-	rts
-
-");
+__attribute__((externally_visible)) LONG __eqdf2(double a,double b)
+{
+	return(IEEEDPCmp(a,b));
+}
 
 /****************************************************************************/
 

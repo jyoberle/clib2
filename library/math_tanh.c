@@ -72,24 +72,13 @@ extern double __tanh(double x);
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubTransBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubTransBase
-	.globl	___tanh
-
-___tanh:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeDoubTransBase)",a6
-	moveml	sp@(8),d0/d1
-	jsr		a6@(-72:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) double __tanh(double a)
+{
+	return(IEEEDPTanh(a));
+}
 
 /****************************************************************************/
 

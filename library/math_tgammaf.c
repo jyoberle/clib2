@@ -53,12 +53,10 @@
 float
 tgammaf(float x)
 {
-	int gamma_sign;
+	// modified by JOB
 	float y;
 
-	y = __lgammaf(x,&gamma_sign);
-	if (gamma_sign < 0)
-		y = -y;
+	y = expf(lgammaf(x));
 
 	return y;
 }

@@ -36,24 +36,24 @@
 /****************************************************************************/
 
 #ifndef __PPC__
-asm("                         \n\
-                              \n\
-	.text                      \n\
-	.even                      \n\
-                              \n\
-	.globl	___modsi3         \n\
-	.globl	___divsi4         \n\
-                              \n\
-| D1.L = D0.L % D1.L signed   \n\
-                              \n\
-___modsi3:                    \n\
-                              \n\
-	moveml	sp@(4:W),d0/d1    \n\
-	jbsr	___divsi4            \n\
-	movel	d1,d0                \n\
-	rts                        \n\
-                              \n\
-");
+#include <proto/utility.h>
+#define ASM __asm
+
+// modified by JOB
+extern struct UtilityBase *UtilityBase;
+
+__attribute__((externally_visible)) LONG __modsi3(LONG dividend,LONG divisor)
+{
+	register volatile LONG _d0                 ASM("d0") = dividend;
+	register volatile LONG _d1                 ASM("d1") = divisor; // also contains return value
+	register volatile struct UtilityBase * _a0 ASM("a0") = UtilityBase;
+	__asm volatile (
+		"jsr -150(%%a0)\n" // _LVOSDivMod32
+	: "=r"(_d0),"=r"(_d1) // the utility.library math routines preserve all	address registers including A0 and A1
+	: "r"(_d0),"r"(_d1),"r"(_a0)
+	: "fp0", "fp1", "cc", "memory");
+	return((LONG)_d1); // remainder in D1
+}
 #else
 __asm("							\n\
 	.text						\n\

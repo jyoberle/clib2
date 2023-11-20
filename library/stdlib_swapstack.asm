@@ -37,7 +37,8 @@
 
 _LVOStackSwap equ -732
 
-	xref	_SysBase
+*	xref	_SysBase
+	xref	SysBase
 
 	xdef	___swap_stack_and_call
 
@@ -45,7 +46,8 @@ ___swap_stack_and_call:
 
 	movem.l	d2/a2/a3/a6,-(sp)
 
-	move.l	_SysBase,a6
+*	move.l	_SysBase,a6
+	move.l	SysBase,a6
 
 	move.l	20(sp),a2
 	move.l	24(sp),a3

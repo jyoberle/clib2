@@ -1,93 +1,32 @@
-/*
- * $Id: amiga_coercemethod.c,v 1.3 2006-01-08 12:04:22 obarthel Exp $
- *
- * :ts=4
- *
- * Portable ISO 'C' (1994) runtime library for the Amiga computer
- * Copyright (c) 2002-2015 by Olaf Barthel <obarthel (at) gmx.net>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   - Neither the name of Olaf Barthel nor the names of contributors
- *     may be used to endorse or promote products derived from this
- *     software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
-#ifndef __PPC__
-
-/****************************************************************************/
-
-#include <intuition/intuition.h>
-#include <intuition/classes.h>
-
+#include "l_alib.h"
+#include <proto/exec.h>
 #include <clib/alib_protos.h>
+#include <stdarg.h>
 
-/****************************************************************************/
-
-#include "debug.h"
-
-/****************************************************************************/
-
-ULONG
-CoerceMethodA(Class * cl,Object * obj,Msg msg)
+ULONG CoerceMethod(Class *cl, Object *obj, ULONG method_id, ...)
 {
-	ULONG result = 0;
-
-	ENTER();
-
-	SHOWPOINTER(cl);
-	SHOWPOINTER(obj);
-	SHOWPOINTER(msg);
-
-	assert( cl != NULL && obj != NULL );
+	ULONG result = 0L;
+	va_list param;
+	ULONG *msg;
+	int i;
 
 	if(cl != NULL && obj != NULL)
-		result = CallHookA(&cl->cl_Dispatcher,obj,msg);
+	{
+		if ((msg = AllocVec(ARG_CNT*sizeof(ULONG),MEMF_ANY)))
+		{
+			msg[0] = method_id;
+			va_start(param,method_id);
+			
+			for(int i=1;i<ARG_CNT;i++) {
+				msg[i] = (ULONG)va_arg(param,ULONG);
+			}
 
-	RETURN(result);
+			va_end(param);
+
+			result = CoerceMethodA(cl,obj,(Msg)msg);
+			FreeVec(msg);
+		}
+	}
+
 	return(result);
 }
-
-/****************************************************************************/
-
-ULONG
-CoerceMethod(Class *cl, Object *obj, ULONG method_id, ...)
-{
-	ULONG result = 0;
-
-	ENTER();
-
-	SHOWPOINTER(cl);
-	SHOWPOINTER(obj);
-	SHOWVALUE(method_id);
-
-	assert( cl != NULL && obj != NULL );
-
-	if(cl != NULL && obj != NULL)
-		result = CoerceMethodA(cl,obj,(Msg)&method_id);
-
-	RETURN(result);
-	return(result);
-}
-
-/****************************************************************************/
-
-#endif /* __PPC__ */

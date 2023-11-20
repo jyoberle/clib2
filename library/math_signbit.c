@@ -54,7 +54,7 @@ __signbit_float(float number)
 
 	x.value = number;
 
-	result = ((x.raw[0] = 0x80000000) != 0);
+	result = ((x.raw[0] & 0x80000000) != 0); // modified by JOB
 
 	return(result);
 }
@@ -69,7 +69,7 @@ __signbit_double(double number)
 
 	x.value = number;
 
-	result = ((x.raw[0] = 0x80000000) != 0);
+	result = ((x.raw[0] & 0x80000000) != 0); // modified by JOB
 
 	return(result);
 }

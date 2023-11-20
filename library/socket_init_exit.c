@@ -98,18 +98,26 @@ BOOL NOCOMMON __thread_safe_errno_h_errno;
    the library will also be the one will eventually call the hook function.
    You can key off this in your own __set_errno() or __set_h_errno()
    functions, setting a Process-specific set of variables. */
+// modified by JOB
 STATIC LONG ASM
 error_hook_function(
-	REG(a0, struct Hook *			unused_hook),
-	REG(a2, APTR					unused_reserved),
-	REG(a1, struct _ErrorHookMsg *	ehm))
+	struct Hook *			unused_hook,
+	APTR					unused_reserved,
+	struct _ErrorHookMsg *	ehm)
 {
-	if(ehm != NULL && ehm->ehm_Size >= 12)
+	struct _ErrorHookMsg *ehm_a1;
+
+	__asm volatile ("movea.l %%a1,%0\n\t"
+                     : "=a"(ehm_a1)
+                     : /* no input */
+                     : /* no clobbers */);
+
+	if(ehm_a1 != NULL && ehm_a1->ehm_Size >= 12)
 	{
-		if (ehm->ehm_Action == EHMA_Set_errno)
-			__set_errno(ehm->ehm_Code);
-		else if (ehm->ehm_Action == EHMA_Set_h_errno)
-			__set_h_errno(ehm->ehm_Code);
+		if (ehm_a1->ehm_Action == EHMA_Set_errno)
+			__set_errno(ehm_a1->ehm_Code);
+		else if (ehm_a1->ehm_Action == EHMA_Set_h_errno)
+			__set_h_errno(ehm_a1->ehm_Code);
 	}
 
 	return(0);

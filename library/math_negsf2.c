@@ -41,7 +41,7 @@
 
 /****************************************************************************/
 
-float
+__attribute__((externally_visible)) float
 __negsf2(float x)
 {
 	float result;

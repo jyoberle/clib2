@@ -72,25 +72,13 @@ extern double __pow(double x,double y);
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubTransBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubTransBase
-	.globl	___pow
-
-___pow:
-
-	moveml	d2/d3/a6,sp@-
-	movel	"A4(_MathIeeeDoubTransBase)",a6
-	moveml	sp@(16),d0/d1					| Note that the parameters
-	moveml	sp@(24),d2/d3					| are reversed!
-	jsr		a6@(-90:W)
-	moveml	sp@+,d2/d3/a6
-	rts
-
-");
+__attribute__((externally_visible)) double __pow(double a,double b)
+{
+	return(IEEEDPPow(b,a));
+}
 
 /****************************************************************************/
 

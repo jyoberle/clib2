@@ -41,10 +41,11 @@
 
 /****************************************************************************/
 
-float
+// modified by JOB
+__attribute__((externally_visible)) LONG
 __eqsf2(float x,float y)
 {
-	float result;
+	LONG result;
 
 	result = IEEESPCmp(x,y);
 

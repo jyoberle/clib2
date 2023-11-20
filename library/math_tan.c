@@ -72,24 +72,13 @@ extern double __tan(double x);
 
 /****************************************************************************/
 
-asm("
+// modified by JOB
+extern struct Library *MathIeeeDoubTransBase;
 
-	.text
-	.even
-
-	.globl	_MathIeeeDoubTransBase
-	.globl	___tan
-
-___tan:
-
-	movel	a6,sp@-
-	movel	"A4(_MathIeeeDoubTransBase)",a6
-	moveml	sp@(8),d0/d1
-	jsr		a6@(-48:W)
-	movel	sp@+,a6
-	rts
-
-");
+__attribute__((externally_visible)) double __tan(double a)
+{
+	return(IEEEDPTan(a));
+}
 
 /****************************************************************************/
 

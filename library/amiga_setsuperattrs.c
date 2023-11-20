@@ -35,10 +35,13 @@
 
 /****************************************************************************/
 
+#include "l_alib.h"
+#include <proto/exec.h>
 #include <intuition/intuition.h>
 #include <intuition/classes.h>
 
 #include <clib/alib_protos.h>
+#include <stdarg.h>
 
 /****************************************************************************/
 
@@ -76,7 +79,36 @@ SetSuperAttrsA(Class * cl,Object * obj,struct TagItem * tags)
 
 /****************************************************************************/
 
-ULONG
+// moodified by JOB
+ULONG SetSuperAttrs(Class *cl,Object *obj,ULONG tag1, ...)
+{
+    ULONG result = 0L;
+	va_list param;
+	ULONG *tags;
+	int i;
+
+    if(cl != NULL && obj != NULL)
+    {
+		if ((tags = AllocVec(ARG_CNT*sizeof(ULONG),MEMF_ANY)))
+		{
+			tags[0] = tag1;
+			va_start(param,tag1);
+			
+			for(int i=1;i<ARG_CNT;i++) {
+				tags[i] = (ULONG)va_arg(param,struct TagItem *);
+			}
+
+			va_end(param);
+
+			result = SetSuperAttrsA(cl,obj,(struct TagItem *)tags);
+			FreeVec(tags);
+		}
+    }
+
+    return(result);
+}
+
+/*ULONG
 SetSuperAttrs(Class * cl,Object * obj,ULONG tag1,...)
 {
 	ULONG result = 0;
@@ -94,7 +126,7 @@ SetSuperAttrs(Class * cl,Object * obj,ULONG tag1,...)
 
 	RETURN(result);
 	return(result);
-}
+}*/
 
 /****************************************************************************/
 
