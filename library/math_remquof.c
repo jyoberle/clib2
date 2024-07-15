@@ -55,6 +55,15 @@ remquof(float x,float y,int * quo)
   int wy;
   float x_over_y;
 
+  if(isnan(x) || isnan(y))
+    return(nanf(NULL));
+
+  if(isinf(x) || (fpclassify(y) == FP_ZERO))
+  {
+    __set_errno(EDOM);
+    return(nanf(NULL));
+  }
+
   GET_FLOAT_WORD(wx, x);
   GET_FLOAT_WORD(wy, y);
 

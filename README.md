@@ -45,7 +45,8 @@ The below functions are provided:
  [vsprintf](https://man7.org/linux/man-pages/man3/vsprintf.3.html), [vsscanf](https://man7.org/linux/man-pages/man3/vsscanf.3.html), [vscanf](https://man7.org/linux/man-pages/man3/vscanf.3.html),
  [abort](https://man7.org/linux/man-pages/man3/abort.3.html), [abs](https://man7.org/linux/man-pages/man3/abs.3.html), [alloca](https://man7.org/linux/man-pages/man3/alloca.3.html),
  [atexit](https://man7.org/linux/man-pages/man3/atexit.3.html), [atoi](https://man7.org/linux/man-pages/man3/atoi.3.html), [atol](https://man7.org/linux/man-pages/man3/atol.3.html),
- [bsearch](https://man7.org/linux/man-pages/man3/bsearch.3.html), [calloc](https://man7.org/linux/man-pages/man3/calloc.3.html), [div](https://man7.org/linux/man-pages/man3/div.3.html),
+ [bsearch](https://man7.org/linux/man-pages/man3/bsearch.3.html), [calloc](https://man7.org/linux/man-pages/man3/calloc.3.html),
+ [__clzsi2](https://gcc.gnu.org/onlinedocs/gccint/Integer-library-routines.html), [__ctzsi2](https://gcc.gnu.org/onlinedocs/gccint/Integer-library-routines.html), [div](https://man7.org/linux/man-pages/man3/div.3.html),
  [__divsi3](https://gcc.gnu.org/onlinedocs/gccint/Integer-library-routines.html), [exit](https://man7.org/linux/man-pages/man3/exit.3.html),
  [free](https://man7.org/linux/man-pages/man3/free.3.html), [getenv](https://man7.org/linux/man-pages/man3/getenv.3.html), [labs](https://man7.org/linux/man-pages/man3/labs.3.html),
  [llabs](https://man7.org/linux/man-pages/man3/llabs.3.html), [ldiv](https://man7.org/linux/man-pages/man3/ldiv.3.html), [malloc](https://man7.org/linux/man-pages/man3/malloc.3.html),
@@ -158,7 +159,8 @@ The below functions are provided:
  [vscanf](https://man7.org/linux/man-pages/man3/vscanf.3.html), [vprintf](https://man7.org/linux/man-pages/man3/vprintf.3.html), [vsnprintf](https://man7.org/linux/man-pages/man3/vsnprintf.3.html),
  [vsprintf](https://man7.org/linux/man-pages/man3/vsprintf.3.html), [atof](https://man7.org/linux/man-pages/man3/atof.3.html), [strtod](https://man7.org/linux/man-pages/man3/strtod.3.html),
  [strtof](https://man7.org/linux/man-pages/man3/strtof.3.html), [difftime](https://man7.org/linux/man-pages/man3/difftime.3.html),
- [__adddf3](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__addsf3](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__divdf3](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html),
+ [__adddf3](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__addsf3](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html),
+ [__ashldi3](https://gcc.gnu.org/onlinedocs/gccint/Integer-library-routines.html),[__divdf3](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html),
  [__divsf3](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__eqdf2](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__eqsf2](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html),
  [__extendsfdf2](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__fixdfsi](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__fixsfsi](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html),
  [__fixunsdfsi](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__fixunssfsi](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html), [__floatsidf](https://gcc.gnu.org/onlinedocs/gccint/Soft-float-library-routines.html),
@@ -202,7 +204,8 @@ The below functions are provided:
  [log1p](https://man7.org/linux/man-pages/man3/log1p.3.html), [log1pf](https://man7.org/linux/man-pages/man3/log1pf.3.html), [log2](https://man7.org/linux/man-pages/man3/log2.3.html),
  [log2f](https://man7.org/linux/man-pages/man3/log2f.3.html), [logb](https://man7.org/linux/man-pages/man3/logb.3.html), [logbf](https://man7.org/linux/man-pages/man3/logbf.3.html),
  [logf](https://man7.org/linux/man-pages/man3/logf.3.html), [lrint](https://man7.org/linux/man-pages/man3/lrint.3.html), [lrintf](https://man7.org/linux/man-pages/man3/lrintf.3.html),
- [lround](https://man7.org/linux/man-pages/man3/lround.3.html), [lroundf](https://man7.org/linux/man-pages/man3/lroundf.3.html), [modf](https://man7.org/linux/man-pages/man3/modf.3.html),
+ [lround](https://man7.org/linux/man-pages/man3/lround.3.html), [lroundf](https://man7.org/linux/man-pages/man3/lroundf.3.html),
+ [__lshrdi3](https://gcc.gnu.org/onlinedocs/gccint/Integer-library-routines.html), [modf](https://man7.org/linux/man-pages/man3/modf.3.html),
  [modff](https://man7.org/linux/man-pages/man3/modff.3.html), [nan](https://man7.org/linux/man-pages/man3/nan.3.html), [nanf](https://man7.org/linux/man-pages/man3/nanf.3.html),
  [nearbyint](https://man7.org/linux/man-pages/man3/nearbyint.3.html), [nearbyintf](https://man7.org/linux/man-pages/man3/nearbyintf.3.html), [nextafter](https://man7.org/linux/man-pages/man3/nextafter.3.html),
  [nextafterf](https://man7.org/linux/man-pages/man3/nextafterf.3.html), [pow](https://man7.org/linux/man-pages/man3/pow.3.html) [powf](https://man7.org/linux/man-pages/man3/powf.3.html),
@@ -222,7 +225,8 @@ The below functions are provided:
  [vsprintf](https://man7.org/linux/man-pages/man3/vsprintf.3.html), [atof](https://man7.org/linux/man-pages/man3/atof.3.html), [strtod](https://man7.org/linux/man-pages/man3/strtod.3.html),
  [strtof](https://man7.org/linux/man-pages/man3/strtof.3.html), [difftime](https://man7.org/linux/man-pages/man3/difftime.3.html)
  - In `libnet`: [accept](https://man7.org/linux/man-pages/man2/accept.2.html), [bind](https://man7.org/linux/man-pages/man2/bind.2.html), [connect](https://man7.org/linux/man-pages/man2/connect.2.html),
- [gethostbyaddr](https://man7.org/linux/man-pages/man3/gethostbyaddr.3.html), [gethostbyname](https://man7.org/linux/man-pages/man3/gethostbyname.3.html), [gethostid](https://man7.org/linux/man-pages/man3/gethostid.3.html),
+ [getaddrinfo](https://man7.org/linux/man-pages/man3/getaddrinfo.3.html), [gethostbyaddr](https://man7.org/linux/man-pages/man3/gethostbyaddr.3.html), 
+ [gethostbyname](https://man7.org/linux/man-pages/man3/gethostbyname.3.html), [gethostid](https://man7.org/linux/man-pages/man3/gethostid.3.html),
  [gethostname](https://man7.org/linux/man-pages/man2/gethostname.2.html), [getnetbyaddr](https://man7.org/linux/man-pages/man3/getnetbyaddr.3.html), [getnetbyname](https://man7.org/linux/man-pages/man3/getnetbyname.3.html),
  [getpeername](https://man7.org/linux/man-pages/man2/getpeername.2.html), [getprotobyname](https://man7.org/linux/man-pages/man3/getprotobyname.3.html), [getprotobynumber](https://man7.org/linux/man-pages/man3/getprotobynumber.3.html),
  [getservbyname](https://man7.org/linux/man-pages/man3/getservbyname.3.html), [getservbyport](https://man7.org/linux/man-pages/man3/getservbyport.3.html), [getsockname](https://man7.org/linux/man-pages/man2/getsockname.2.html),
@@ -290,18 +294,7 @@ f. At the end, close the UAE window\
 <u>Note</u>: after the test, UAE may signal a (false) read error on the Workench disk. This is due to the fact that we modified its configuration while running
 - `libunix` should be tested after you changed the definition of the static libs order in the `Makefile` to put -lunix before -lc (see the commented static_libs lines in the `Makefile` and don't forget to put back the original lines after the test!)
 
-If you want to use the libraries in your own project, your code will have to follow the skeleton of the included `main.c` file:
-- Check for the Workbench startup message
-- Assign to the variable __WBenchMsg the value of the pointer to the Workbench startup message, or assign NULL if started from command line
-- Set __exit_blocked to FALSE to push exit() and similar functions to longjmp to target set by setjmp()
-- Declare and open the following libraries: Exec, intuition.library, dos.library, utility.library, graphics.library, commodities.library and icon.library
-- Assign to the variable __UtilityBase the value of UtilityBase
-- Set the target `out:` (which is used by `exit`) through the `setjmp` instruction
-- Call all the constructors, like in the `fcntCallCtor` function (the constructors must be called in a specific order)\
-At the end:
-- At the `out:` target, call the destructors, like in the `fcntCallDtor` function (the destructors must also be called in a specific order)
-- Close all libraries
-- If needed, reply to the Workbench startup message
+If you want to use the libraries in your own project, your code will have to follow the skeleton of the included `main.c` file.
 
 It is also mandatory:
 - To declare the static libs in your `Makefile`:\
@@ -327,10 +320,21 @@ b. static_libs := -lm -ldebug -lnet -lunix -lc -lamiga, to use UNIX style paths 
 ### V1_214
 - First version
 
+### V1_214_1
+- Better support of inf and NaN by math functions
+- Added functions __ashldi3, __lshrdi3, getaddrinfo, __clzsi2 and __ctzsi2
+- __time_delay made reentrant
+- Clean in Makefile improved
+- clib compiled to handle floats
+- Fixed code in main to distinguish correctly between start from CLI or Workbench 
+- atan2 fixed
+
 ## Additional credits
 
 - Main code is coming from [clib2](https://github.com/adtools/clib2) written by Olaf Barthel.
 
 - Code for ffp is coming from [MotoFFP](https://github.com/bayerf42/MotoFFP) and [Le_Lisp](https://github.com/GunterMueller/Le_Lisp/).
+
+- Code for getaddrinfo is coming from DNS Tracer
 
 - Remaining code (additional functions, adaptations, wrappers) by [JOB](https://github.com/jyoberle).

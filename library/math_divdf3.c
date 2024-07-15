@@ -56,6 +56,77 @@ extern struct Library *MathIeeeDoubBasBase;
 
 __attribute__((externally_visible)) double __divdf3(double a,double b)
 {
+	volatile double result_zero; // to avoid optimisation from the compiler
+
+	if(isnan(a) || isnan(b))
+		return(nan(NULL));
+
+	if((isinf(a) && isinf(b)) 
+		|| ((fpclassify(a) == FP_ZERO) && (fpclassify(b) == FP_ZERO)))
+	{
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
+
+	if(isinf(a))
+	{
+		if(signbit(a) == 0)
+		{
+			if(signbit(b) == 0)
+				return(__inf()); // +infinity
+
+			// b < 0
+			return(-__inf()); // -infinity
+		}
+
+		// a is -infinity
+		if(signbit(b) == 0)
+			return(-__inf()); // -infinity
+
+		// b < 0
+		return(__inf()); // +infinity
+	}
+
+	if(isinf(b))
+	{
+		if(signbit(b) == 0)
+		{
+			if(signbit(a) == 0)
+				return(0.0);
+
+			// a < 0
+			result_zero = -0.0;
+			return(result_zero);
+		}
+
+		// b is -infinity
+		if(signbit(a) == 0)
+		{
+			result_zero = -0.0;
+			return(result_zero);
+		}
+
+		return(0.0);
+	}
+
+	if((fpclassify(b) == FP_ZERO) && (signbit(b) == 0)) // b is 0.0
+	{
+		if(signbit(a) == 0)
+			return(__inf());
+
+		// a < 0
+		return(-__inf());
+	}
+
+	if((fpclassify(b) == FP_ZERO) && (signbit(b) != 0)) // b is -0.0
+	{
+		if(signbit(a) == 0)
+			return(-__inf());
+
+		// a < 0
+		return(__inf());
+	}
+
 	return(IEEEDPDiv(a,b));
 }
 

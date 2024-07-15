@@ -61,6 +61,9 @@ static const float TWO23[2]={
 
 /****************************************************************************/
 
+// If x is NaN, a domain error shall occur and an unspecified value is returned.
+// If x is +Inf, a domain error shall occur and an unspecified value is returned.
+// If x is -Inf, a domain error shall occur and an unspecified value is returned.
 long int
 lrintf(float x)
 {

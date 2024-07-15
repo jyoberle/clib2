@@ -53,22 +53,176 @@
 #if defined(IEEE_FLOATING_POINT_SUPPORT)
 
 /****************************************************************************/
+// Using same code as with option PPC_FLOATING_POINT_SUPPORT to get fmod(-3,5) = -3
+static const double 
+one = 1.0, 
+Zero[] = {0.0, -0.0,};
 
 INLINE STATIC const double
 __fmod(double x,double y)
 {
-	double q,p,result;
+	int n,hx,hy,hz,ix,iy,sx,i;
+	unsigned int lx,ly,lz;
 
-	q = x / y;
+	EXTRACT_WORDS(hx,lx,x);
+	EXTRACT_WORDS(hy,ly,y);
 
-	if(q < 0.0)
-		p = ceil(q) - q;
-	else
-		p = q - floor(q);
+	sx = hx&0x80000000;         		        /* sign of x */
+	hx ^=sx;		                            /* |x| */
+	hy &= 0x7fffffff;	                        /* |y| */
 
-	result = p * y;
+    /* purge off exception values */
+	if((hy|ly)==0||(hx>=0x7ff00000)||	/* y=0,or x not finite */
+	  ((hy|((ly|-ly)>>31))>0x7ff00000))	/* or y is NaN */
+	    return (x*y)/(x*y);
+	if(hx<=hy) 
+	{
+	    if((hx<hy)||(lx<ly)) 
+			return x;	                        /* |x|<|y| return x */
+	    if(lx==ly) 
+			return Zero[(unsigned int)sx>>31];	/* |x|=|y| return x*0*/
+	}
 
-	return(result);
+    /* determine ix = ilogb(x) */
+	if(hx<0x00100000) 	/* subnormal x */
+	{
+	    if(hx==0) 
+		{
+			for (ix = -1043, i=lx; i>0; i<<=1) 
+				ix -=1;
+	    } 
+		else 
+		{
+			for (ix = -1022,i=(hx<<11); i>0; i<<=1) 
+				ix -=1;
+	    }
+	} 
+	else 
+		ix = (hx>>20)-1023;
+
+    /* determine iy = ilogb(y) */
+	if(hy<0x00100000) 	/* subnormal y */
+	{
+	    if(hy==0) 
+		{
+			for (iy = -1043, i=ly; i>0; i<<=1) 
+				iy -=1;
+	    } 
+		else 
+		{
+			for (iy = -1022,i=(hy<<11); i>0; i<<=1) 
+				iy -=1;
+	    }
+	} 
+	else 
+		iy = (hy>>20)-1023;
+
+    /* set up {hx,lx}, {hy,ly} and align y to x */
+	if(ix >= -1022) 
+	    hx = 0x00100000|(0x000fffff&hx);
+	else 		/* subnormal x, shift x to normal */
+	{
+	    n = -1022-ix;
+	    if(n<=31) 
+		{
+	        hx = (hx<<n)|(lx>>(32-n));
+	        lx <<= n;
+	    }
+		else 
+		{
+			hx = lx<<(n-32);
+			lx = 0;
+	    }
+	}
+
+	if(iy >= -1022) 
+	    hy = 0x00100000|(0x000fffff&hy);
+	else 		/* subnormal y, shift y to normal */
+	{
+	    n = -1022-iy;
+	    if(n<=31) 
+		{
+	        hy = (hy<<n)|(ly>>(32-n));
+	        ly <<= n;
+	    }
+		else 
+		{
+			hy = ly<<(n-32);
+			ly = 0;
+	    }
+	}
+
+    /* fix point fmod */
+	n = ix - iy;
+	while(n--) 
+	{
+	    hz=hx-hy;lz=lx-ly; 
+		if(lx<ly) 
+			hz -= 1;
+
+	    if(hz<0)
+		{
+			hx = hx+hx+(lx>>31); 
+			lx = lx+lx;
+		}
+	    else 
+		{
+	    	if((hz|lz)==0) 		/* return sign(x)*0 */
+				return Zero[(unsigned int)sx>>31];
+	    	hx = hz+hz+(lz>>31); 
+			lx = lz+lz;
+	    }
+	}
+	
+	hz=hx-hy;
+	lz=lx-ly; 
+	
+	if(lx<ly) 
+		hz -= 1;
+	if(hz>=0) 
+	{
+		hx=hz;
+		lx=lz;
+	}
+
+    /* convert back to floating value and restore the sign */
+	if((hx|lx)==0) 			/* return sign(x)*0 */
+	    return Zero[(unsigned int)sx>>31];	
+	while(hx<0x00100000) 		/* normalize x */
+	{
+	    hx = hx+hx+(lx>>31); 
+		lx = lx+lx;
+	    iy -= 1;
+	}
+
+	if(iy>= -1022) 	/* normalize output */
+	{
+	    hx = ((hx-0x00100000)|((iy+1023)<<20));
+	    INSERT_WORDS(x,hx|sx,lx);
+	}
+	else 
+	{		/* subnormal output */
+	    n = -1022 - iy;
+	    if(n<=20) 
+		{
+			lx = (lx>>n)|((unsigned int)hx<<(32-n));
+			hx >>= n;
+	    } 
+		else 
+			if (n<=31) 
+			{
+				lx = (hx<<(32-n))|(lx>>n); 
+				hx = sx;
+			} 
+			else 
+			{
+				lx = hx>>(n-32); hx = sx;
+			}
+
+	    INSERT_WORDS(x,hx|sx,lx);
+	    x *= one;		/* create necessary signal */
+	}
+	return x;		/* exact output */
 }
 
 /****************************************************************************/
@@ -273,12 +427,39 @@ __fmod(double x,double y)
 
 /****************************************************************************/
 
+// If x or y is NaN, a NaN shall be returned, and none of the conditions below shall be considered.
+// If y is zero, a domain error shall occur, and a NaN shall be returned.
+// If x is infinite, a domain error shall occur, and a NaN shall be returned.
+// If x is ±0 and y is not zero, ±0 shall be returned.
+// If x is not infinite and y is ±Inf, x shall be returned.
 double
 fmod(double x,double y)
 {
 	double result;
 
-	if(y != 0.0)
+	if(isnan(x) || isnan(y))
+		return(nan(NULL));
+
+	if(fpclassify(y) == FP_ZERO)
+	{
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
+
+	if(isinf(x))
+	{
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
+
+	// x is not infinity
+	if(isinf(y))
+		return(x);
+
+	if((fpclassify(x) == FP_ZERO) && (fpclassify(y) != FP_ZERO))
+		return(x);
+
+	if(fpclassify(y) != FP_ZERO)
 	{
 		result = __fmod(x,y);
 	}

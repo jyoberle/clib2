@@ -41,10 +41,14 @@
 
 /****************************************************************************/
 
+// __fixunsdfsi converts a to an unsigned integer, rounding toward zero. Negative values all become zero. 
 __attribute__((externally_visible)) unsigned long
 __fixunsdfsi(double x)
 {
 	signed long result;
+
+	if(isnan(x) || isinf(x))
+		return(0L);
 
 	if(x < 0.0)
 		result = 0;

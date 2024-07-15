@@ -42,10 +42,51 @@
 /****************************************************************************/
 
 // modified by JOB
+// __nesf2 returns a nonzero value if either argument is NaN, or if a and b are unequal. 
 LONG
 __attribute__((externally_visible)) __nesf2(float x,float y)
 {
 	LONG result;
+
+if(isnan(x) || isnan(y))
+		return(1L);
+
+	if(isinf(x) && isinf(y))
+	{
+		if(signbit(x) == 0)
+		{
+			if(signbit(y) == 0)
+				return(0L);
+
+			// y is -infinity
+			return(1L);
+		}
+
+		// x is -infinity
+		if(signbit(y) == 0)
+			return(-1L);
+		
+		// y is -infinity
+		return(0L);
+	}
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(1L);
+
+		// x is -infinity
+		return(-1L);
+	}
+
+	if(isinf(y))
+	{
+		if(signbit(y) == 0)
+			return(-1L);
+
+		// y is -infinity
+		return(1L);
+	}
 
 	result = IEEESPCmp(x,y);
 

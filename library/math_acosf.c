@@ -69,13 +69,18 @@ qS2 =  2.0209457874e+00, /* 0x4001572d */
 qS3 = -6.8828397989e-01, /* 0xbf303361 */
 qS4 =  7.7038154006e-02; /* 0x3d9dc62e */
 
+// For finite values of x not in the range [-1,1], a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, a domain error shall occur, and a NaN shall be returned.
 float
 acosf(float x)
 {
 	float z,p,q,r,w,s,c,df;
 	LONG hx,ix;
+
 	GET_FLOAT_WORD(hx,x);
 	ix = hx&0x7fffffff;
+	
 	if(ix==0x3f800000) {		/* |x|==1 */
 	    if(hx>0) return 0.0;	/* acos(1) = 0  */
 	    else return pi+(float)2.0*pio2_lo;	/* acos(-1)= pi */

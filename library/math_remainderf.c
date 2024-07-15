@@ -62,6 +62,17 @@ remainderf(float x, float p)
 	ULONG sx;
 	float p_half;
 
+	// If x or y is NaN, a NaN shall be returned.
+	if(isnan(x) || isnan(p))
+		return(nanf(NULL));
+
+	// If x is infinite or y is 0 and the other is non-NaN, a domain error shall occur, and a NaN shall be returned.
+	if(isinf(x) || (fpclassify(p) == FP_ZERO))
+	{
+		__set_errno(EDOM);
+		return(nanf(NULL));
+	}
+
 	GET_FLOAT_WORD(hx,x);
 	GET_FLOAT_WORD(hp,p);
 	sx = hx&0x80000000U;

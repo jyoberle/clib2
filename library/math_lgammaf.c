@@ -267,6 +267,10 @@ __lgammaf(float x,int * gamma_sign_ptr)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is 1 or 2, +0 shall be returned.
+// If x is ±Inf, +Inf shall be returned.
+// If x is a non-positive integer, a pole error shall occur and lgamma(), lgammaf(), and lgammal() shall return +HUGE_VAL, +HUGE_VALF, and +HUGE_VALL, respectively.
 float
 lgammaf(float x)
 {

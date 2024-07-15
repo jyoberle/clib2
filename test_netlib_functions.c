@@ -39,6 +39,7 @@
 #include <pwd.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <getaddrinfo.h>
 
 #define WEB_SITE "www.perdu.com"
 #define USER_AGENT "Amiga"
@@ -377,7 +378,7 @@ static void fcntCreateServer(void)
 							printf("Message from client: %s",buffer2);
 #endif
 
-							if(sendto(connfd,buffer2,strlen(buffer2),0,NULL,NULL) == ERROR)
+							if(sendto(connfd,buffer2,strlen(buffer2),0,NULL,0) == ERROR)
 							{
 								errCnt++;
 							}
@@ -491,9 +492,7 @@ WORD testNetlibFunctions(void)
 	}
 
 	// Test hstrerror
-#if 0 // This simple test is causing a crash!
 	if(hstrerror(HOST_NOT_FOUND) == NULL) errCnt++;
-#endif
 
 #if 0 // Inet_MakeAddr is not supported
 	in = inet_makeaddr(inet_addr(NETOF_HOST_EXAMPLE),inet_addr(LNAOF_HOST_EXAMPLE));
@@ -789,6 +788,18 @@ WORD testNetlibFunctions(void)
 #if OPTION_TRACE_NETLIB
 		printf("getservbyport: s_name: %s, s_port: %u, s_proto: %s\n",sevrentry->s_name,sevrentry->s_port,sevrentry->s_proto);
 #endif
+	}
+
+	// Test getaddrinfo
+	struct addrinfo *result;
+
+	if(getaddrinfo(WEB_SITE,NULL,NULL,&result) != 0)
+	{
+		errCnt++;
+	}
+	else
+	{
+		freeaddrinfo(result);
 	}
 
 	// Create a new process to launch a client

@@ -50,6 +50,9 @@
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
+// If exp is 0, x shall be returned.
 double
 ldexp(double x, int exp)
 {

@@ -226,10 +226,25 @@ __exp(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is -Inf, +0 shall be returned.
+// If x is +Inf, x shall be returned.
 double
 exp(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(__inf()); // +infinity
+
+		// x is -infinity
+		return(+0.0);
+	}
 
 	result = __exp(x);
 

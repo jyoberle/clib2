@@ -55,11 +55,20 @@
 
 static const float one = 1.0;
 
+// If x is NaN, a NaN shall be returned, and *iptr shall be set to a NaN.
+// If x is ±Inf, ±0 shall be returned, and *iptr shall be set to ±Inf.
 float
 modff(float x, float *iptr)
 {
 	LONG i0,j_0;
 	ULONG i;
+
+	if(isnan(x))
+	{
+		*iptr = nanf(NULL);
+    	return(nanf(NULL));
+	}
+
 	GET_FLOAT_WORD(i0,x);
 	j_0 = ((i0>>23)&0xff)-0x7f;	/* exponent of x */
 	if(j_0<23) {			/* integer part in x */

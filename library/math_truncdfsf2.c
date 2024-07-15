@@ -56,6 +56,18 @@ extern struct Library *MathIeeeDoubTransBase;
 
 __attribute__((externally_visible)) float __truncdfsf2(double a)
 {
+	if(isnan(a))
+		return(nanf(NULL));
+
+	if(isinf(a))
+	{
+		if(signbit(a) == 0)
+			return(__inff());
+
+		// a is -infinity
+		return(-__inff());
+	}
+
 	return(IEEEDPTieee(a));
 }
 

@@ -41,10 +41,14 @@
 
 /****************************************************************************/
 
+// If x or y is NaN, a NaN shall be returned.
 double
 fdim(double x,double y)
 {
 	double result;
+
+	if(isnan(x) || isnan(y))
+		return(nan(NULL));
 
 	if(x > y)
 		result = x - y;

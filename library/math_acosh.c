@@ -54,12 +54,17 @@ static const double
 one	= 1.0,
 ln2	= 6.93147180559945286227e-01;  /* 0x3FE62E42, 0xFEFA39EF */
 
+// For finite values of x < 1, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If x is NaN, a NaN shall be returned.
+// If x is +Inf, +Inf shall be returned
+// If x is -Inf, a domain error shall occur, and a NaN shall be returned.
 double
 acosh(double x)
 {	
 	double t;
 	LONG hx;
 	ULONG lx;
+
 	EXTRACT_WORDS(hx,lx,x);
 	if(hx<0x3ff00000) {		/* x < 1 */
 	    return (x-x)/(x-x);

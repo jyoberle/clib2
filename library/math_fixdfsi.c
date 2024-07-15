@@ -54,8 +54,12 @@
 // modified by JOB
 extern struct Library *MathIeeeDoubBasBase;
 
+// __fixdfsi converts a to a signed integer, rounding toward zero. 
 __attribute__((externally_visible)) LONG __fixdfsi(double a)
 {
+	if(isnan(a) || isinf(a))
+		return(0L);
+
 	return(IEEEDPFix(a));
 }
 

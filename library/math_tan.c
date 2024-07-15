@@ -153,10 +153,21 @@ __tan(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
 double
 tan(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
 
 	result = __tan(x);
 

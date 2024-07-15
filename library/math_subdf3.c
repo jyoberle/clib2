@@ -56,6 +56,50 @@ extern struct Library *MathIeeeDoubBasBase;
 
 __attribute__((externally_visible)) double __subdf3(double a,double b)
 {
+	if(isnan(a) || isnan(b))
+		return(nan(NULL));
+
+	if(isinf(a) && isinf(b))
+	{
+		if(signbit(a) == 0)
+		{
+			if(signbit(b) == 0)
+			{
+				__set_errno(EDOM);
+				return(nan(NULL));
+			}
+
+			// b is -infinity
+			return(__inf()); // +infinity
+		}
+
+		// a is -infinity
+		if(signbit(b) == 0)
+			return(-__inf()); // -infinity
+
+		// b is -infinity
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
+
+	if(isinf(a))
+	{
+		if(signbit(a) == 0)
+			return(__inf());
+
+		// a is -infinity
+		return(-__inf());
+	}
+
+	if(isinf(b))
+	{
+		if(signbit(b) == 0)
+			return(-__inf());
+
+		// b is -infinity
+		return(__inf());
+	}
+
 	return(IEEEDPSub(a,b));
 }
 

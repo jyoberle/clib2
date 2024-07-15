@@ -55,10 +55,37 @@
 
 static const float one = 1.0, Zero[] = {0.0, -0.0,};
 
+// If x or y is NaN, a NaN shall be returned, and none of the conditions below shall be considered.
+// If y is zero, a domain error shall occur, and a NaN shall be returned.
+// If x is infinite, a domain error shall occur, and a NaN shall be returned.
+// If x is ±0 and y is not zero, ±0 shall be returned.
+// If x is not infinite and y is ±Inf, x shall be returned.
 float
 fmodf(float x, float y)
 {
 	LONG n,hx,hy,hz,ix,iy,sx,i;
+
+	if(isnan(x) || isnan(y))
+		return(nanf(NULL));
+
+	if(fpclassify(y) == FP_ZERO)
+	{
+		__set_errno(EDOM);
+		return(nanf(NULL));
+	}
+
+	if(isinf(x))
+	{
+		__set_errno(EDOM);
+		return(nanf(NULL));
+	}
+
+	// x is not infinity
+	if(isinf(y))
+		return(x);
+
+	if((fpclassify(x) == FP_ZERO) && (fpclassify(y) != FP_ZERO))
+		return(x);
 
 	GET_FLOAT_WORD(hx,x);
 	GET_FLOAT_WORD(hy,y);

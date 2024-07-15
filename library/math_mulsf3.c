@@ -46,6 +46,90 @@ __mulsf3(float x,float y)
 {
 	float result;
 
+	if(isnan(x) || isnan(y))
+		return(nanf(NULL));
+
+	if(isinf(x) && isinf(y))
+	{
+		if(signbit(x) == 0)
+		{
+			if(signbit(y) == 0)
+				return(__inff()); // +infinity
+
+			// y < 0
+			return(-__inff()); // -infinity
+		}
+
+		// x is -infinity
+		if(signbit(y) == 0)
+			return(-__inff()); // -infinity
+
+		// y is -infinity
+		return(__inff()); // +infinity		
+	}
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+		{
+			if(fpclassify(y) == FP_ZERO)
+			{
+				__set_errno(EDOM);
+				return(nanf(NULL));	
+			}
+
+			if(signbit(y) == 0)
+				return(__inff()); // +infinity
+
+			// y < 0
+			return(-__inff()); // -infinity
+		}
+
+		// x is -infinity
+		if(fpclassify(y) == FP_ZERO)
+		{
+			__set_errno(EDOM);
+			return(nanf(NULL));	
+		}
+
+		if(signbit(y) == 0)
+			return(-__inff()); // -infinity
+
+		// y < 0
+		return(__inff()); // +infinity
+	}
+
+	if(isinf(y))
+	{
+		if(signbit(y) == 0)
+		{
+			if(fpclassify(x) == FP_ZERO)
+			{
+				__set_errno(EDOM);
+				return(nanf(NULL));	
+			}
+
+			if(signbit(x) == 0)
+				return(__inff()); // +infinity
+
+			// x < 0
+			return(-__inff()); // -infinity
+		}
+
+		// y is -infinity
+		if(fpclassify(x) == FP_ZERO)
+		{
+			__set_errno(EDOM);
+			return(nanf(NULL));	
+		}
+
+		if(signbit(x) == 0)
+			return(-__inff()); // -infinity
+
+		// x < 0
+		return(__inff()); // +infinity
+	}
+
 	result = IEEESPMul(x,y);
 
 	return(result);

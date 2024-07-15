@@ -280,6 +280,8 @@ C_LIB = \
 	stdlib_udivsi4.o \
 	stdlib_umodsi3.o \
 	stdlib_unsetenv.o \
+	stdlib_ctzsi2.o \
+	stdlib_clzsi2.o \
 	strings_ffs.o \
 	strings_strcasecmp.o \
 	strings_strncasecmp.o \
@@ -566,8 +568,6 @@ MATH_LIB = \
 	math_hypotf.o \
 	math_ilogb.o \
 	math_ilogbf.o \
-	math_inf.o \
-	math_inff.o \
 	math_init_exit.o \
 	math_isfinite.o \
 	math_isunordered.o \
@@ -597,6 +597,8 @@ MATH_LIB = \
 	math_modff.o \
 	math_nan.o \
 	math_nanf.o \
+	math_inf.o \
+	math_inff.o \
 	math_nearbyint.o \
 	math_nearbyintf.o \
 	math_nextafter.o \
@@ -695,7 +697,9 @@ MATH_LIB_IEEE = \
 	math_floatunsidf.o \
 	math_divdi3.o \
 	math_moddi3.o \
-	math_muldi3.o
+	math_muldi3.o \
+	math_ashldi3.o \
+	math_lshrdi3.o
 
 NET_LIB = \
 	net.lib_rev.o \
@@ -776,7 +780,8 @@ NET_LIB = \
 	usergroup_setreuid.o \
 	usergroup_setsid.o \
 	usergroup_setuid.o \
-	utsname_uname.o
+	utsname_uname.o \
+	socket_getaddrinfo.o
 
 DEBUG_LIB = \
 	debug.lib_rev.o \
@@ -976,7 +981,7 @@ $(OUT).elf: libs/libc.a libs/libunix.a libs/libm.a libs/libm881.a libs/libnet.a 
 clean:
 	$(info Cleaning...)
 ifdef WINDOWS
-	@del /q obj\* out\*
+	@del /q obj\* obj\libamiga_objs\* obj\libc_objs\* obj\libdebug_objs\* obj\libdebug_objs\* obj\libm881_objs\* obj\libnet_objs\* obj\libunix_objs\* out\* libs\*
 else
 	@$(RM) obj/* out/*
 endif
@@ -985,7 +990,7 @@ endif
 
 $(c_clib_objects) :$(LIBC_OBJS)/%.o : %.c
 	$(info Compiling $<)
-	@$(CC) $(CCFLAGS) -c -o $@ $(CURDIR)/$<
+	@$(CC) $(CCFLAGS) -DIEEE_FLOATING_POINT_SUPPORT -c -o $@ $(CURDIR)/$<
 
 $(c_unixlib_objects) : $(LIBUNIX_OBJS)/%.o : %.c
 	$(info Compiling $<)

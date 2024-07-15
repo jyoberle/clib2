@@ -407,17 +407,152 @@ __pow(double x,double y)
 #endif /* PPC_FLOATING_POINT_SUPPORT */
 
 /****************************************************************************/
-
 double
 pow(double x,double y)
 {
 	double result;
+	volatile double result_zero; // to avoid optimisation from the compiler
 
+	if(isinf(x) && isinf(y))
+	{
+		if(signbit(x) == 0)
+		{
+			if(signbit(y) == 0)
+				return(__inf()); // (+infinity)^(+infinity)
+
+			// y is -infinity
+			return(0.0);
+		}
+		else
+		{
+			// x is -infinity
+			if(signbit(y) == 0)
+				return(__inf());
+
+			// y is -infinity
+			return(0.0);			
+		}
+	}
+
+	// For any value of y (including NaN), if x is +1, 1.0 shall be returned.
+	if(x == 1.0)
+		return(1.0);
+
+	// For any value of x (including NaN), if y is ±0, 1.0 shall be returned.
+	if(fpclassify(y) == FP_ZERO)
+		return(1.0);
+
+	// If x or y is a NaN, a NaN shall be returned (unless specified elsewhere in this description).
+	if(isnan(x) || isnan(y))
+	{
+		return(nan(NULL));
+	}
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+		{
+			// x is +infinity
+			// For y < 0, if x is +Inf, +0 shall be returned.
+			if(y < 0.0)
+				return(0.0);
+
+			// For y > 0, if x is +Inf, +Inf shall be returned
+			if(y > 0.0)
+				return(__inf());
+
+			return(1.0); // y is 0
+		}
+
+		// x is -infinity
+		if(y < 0.0)
+		{
+			if(floor(-y) == -y && ((int)(-y))%2 == 1)
+			{
+				// For y an odd integer < 0, if x is -Inf, -0 shall be returned.
+				result_zero = -0.0;
+				return(result_zero);
+			}
+			else
+			{
+				// For y < 0 and not an odd integer, if x is -Inf, +0 shall be returned.
+				return(0.0);
+			}
+		}
+
+		if(y > 0.0)
+		{
+			if(floor(y) == y && ((int)(y))%2 == 1)
+			{
+				// For y an odd integer > 0, if x is -Inf, -Inf shall be returned.
+				return(-__inf());
+			}
+			else
+			{
+				// For y > 0 and not an odd integer, if x is -Inf, +Inf shall be returned.
+				return(__inf());
+			}
+
+			return(__inf()); // +infinity
+		}
+	}
+
+	if(isinf(y))
+	{
+		if(y > 0)
+		{
+			// y is +infinite
+			// For |x| < 1, if y is +Inf, +0 shall be returned.
+			if(x < 1.0 && x > -1.0)
+				return(0.0);
+
+			// If x is -1, and y is ±Inf, 1.0 shall be returned.
+			if(x == 1.0 || x == -1.0)
+				return(1.0);
+
+			// For |x| > 1, if y is +Inf, +Inf shall be returned.
+			return(__inf());
+		}
+
+		// y is -infinity
+		// For |x| < 1, if y is -Inf, +Inf shall be returned.
+		if(x < 1.0 && x > -1.0)
+			return(__inf());
+
+		// If x is -1, and y is ±Inf, 1.0 shall be returned.
+		if(x == 1.0 || x == -1.0)
+			return(1.0);
+
+		// For |x| > 1, if y is -Inf, +0 shall be returned.
+		return(0.0);
+	}
+
+	if(y > 0.0)
+	{
+		if(floor(y) == y && ((int)y)%2 == 1)
+		{
+			// For any odd integer value of y > 0, if x is ±0, ±0 shall be returned.
+			if(fpclassify(x) == FP_ZERO)
+				return(x);
+		}
+		else
+		{
+			// For y > 0 and not an odd integer, if x is ±0, +0 shall be returned.
+			if(fpclassify(x) == FP_ZERO)
+				return(0.0);
+		}
+	}
+
+	// If x is -1, and y is ±Inf, 1.0 shall be returned.
+	if(x == -1.0 && isinf(y))
+		return(1.0);
+
+	// For y < 0, if x is zero, a pole error may occur and pow(), powf(), and powl() shall return ±HUGE_VAL, ±HUGE_VALF, and ±HUGE_VALL, respectively
 	if(x == 0 && y < 0)
 	{
 		__set_errno(EDOM);
 
-		result = __get_huge_val();
+		result = __inf();
 		goto out;
 	}
 
@@ -425,12 +560,13 @@ pow(double x,double y)
 	{
 		double abs_y;
 
+		// For finite values of x < 0, and finite non-integer values of y, a domain error shall occur and either a NaN (if representable), or an implementation-defined value shall be returned.
 		abs_y = fabs(y);
 		if(floor(abs_y) != abs_y)
 		{
 			__set_errno(EDOM);
 
-			result = __get_huge_val();
+			result = nan(NULL);
 			goto out;
 		}
 	}

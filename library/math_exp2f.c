@@ -41,9 +41,25 @@
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0, 1 shall be returned.
+// If x is -Inf, +0 shall be returned.
+// If x is +Inf, x shall be returned.
 float
 exp2f(float x)
 {
+	if(isnan(x))
+		return(nanf(NULL));
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(__inff());
+
+		// x is -infinity
+		return(0.0f); 
+	}
+
 	return(powf(2.0, x));
 }
 

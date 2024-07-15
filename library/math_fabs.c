@@ -165,10 +165,19 @@ __fabs(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0, +0 shall be returned.
+// If x is ±Inf, +Inf shall be returned.
 double
 fabs(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+		return(__inf()); // +infinity
 
 	result = __fabs(x);
 

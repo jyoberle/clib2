@@ -56,6 +56,90 @@ extern struct Library *MathIeeeDoubBasBase;
 
 __attribute__((externally_visible)) double __muldf3(double a,double b)
 {
+	if(isnan(a) || isnan(b))
+		return(nan(NULL));
+
+	if(isinf(a) && isinf(b))
+	{
+		if(signbit(a) == 0)
+		{
+			if(signbit(b) == 0)
+				return(__inf()); // +infinity
+
+			// b < 0
+			return(-__inf()); // -infinity
+		}
+
+		// a is -infinity
+		if(signbit(b) == 0)
+			return(-__inf()); // -infinity
+
+		// b is -infinity
+		return(__inf()); // +infinity		
+	}
+
+	if(isinf(a))
+	{
+		if(signbit(a) == 0)
+		{
+			if(fpclassify(b) == FP_ZERO)
+			{
+				__set_errno(EDOM);
+				return(nan(NULL));	
+			}
+
+			if(signbit(b) == 0)
+				return(__inf()); // +infinity
+
+			// b < 0
+			return(-__inf()); // -infinity
+		}
+
+		// a is -infinity
+		if(fpclassify(b) == FP_ZERO)
+		{
+			__set_errno(EDOM);
+			return(nan(NULL));	
+		}
+
+		if(signbit(b) == 0)
+			return(-__inf()); // -infinity
+
+		// b < 0
+		return(__inf()); // +infinity
+	}
+
+	if(isinf(b))
+	{
+		if(signbit(b) == 0)
+		{
+			if(fpclassify(a) == FP_ZERO)
+			{
+				__set_errno(EDOM);
+				return(nan(NULL));	
+			}
+
+			if(signbit(a) == 0)
+				return(__inf()); // +infinity
+
+			// a < 0
+			return(-__inf()); // -infinity
+		}
+
+		// b is -infinity
+		if(fpclassify(a) == FP_ZERO)
+		{
+			__set_errno(EDOM);
+			return(nan(NULL));	
+		}
+
+		if(signbit(a) == 0)
+			return(-__inf()); // -infinity
+
+		// a < 0
+		return(__inf()); // +infinity
+	}
+
 	return(IEEEDPMul(a,b));
 }
 

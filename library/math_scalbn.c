@@ -56,6 +56,9 @@ twom54  =  5.55111512312578270212e-17, /* 0x3C900000, 0x00000000 */
 huge   = 1.0e+300,
 tiny   = 1.0e-300;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
+// If n is 0, x shall be returned. 
 double
 scalbn (double x, int n)
 {

@@ -61,6 +61,13 @@ pi_o_2  = 1.5707963705e+00, /* 0x3fc90fdb */
 pi      = 3.1415925026e+00, /* 0x40490fda */
 pi_lo   = 1.5099578832e-07; /* 0x34222168 */
 
+// If either x or y is NaN, a NaN shall be returned.
+// If y is ±0 and x is +0, ±0 shall be returned.
+// For finite values of ± y > 0, if x is -Inf, ±pi shall be returned.
+// For finite values of ± y > 0, if x is +Inf, ±0 shall be returned.
+// For finite values of x, if y is ±Inf, ±pi/2 shall be returned.
+// If y is ±Inf and x is -Inf, ±3pi/4 shall be returned.
+// If y is ±Inf and x is +Inf, ±pi/4 shall be returned.
 float
 atan2f(float y, float x)
 {

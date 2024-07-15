@@ -54,8 +54,21 @@
 // modified by JOB
 extern struct Library *MathIeeeDoubTransBase;
 
+// __extendsfdf2 extends a to the wider mode of their return type. 
 __attribute__((externally_visible)) double __extendsfdf2(float a)
 {
+	if(isnan(a))
+		return(nan(NULL));
+
+	if(isinf(a))
+	{
+		if(signbit(a) == 0)
+			return(__inf());
+
+		// a is -infinity
+		return(-__inf());
+	}
+
 	return(IEEEDPFieee(a));
 }
 

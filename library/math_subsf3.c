@@ -46,6 +46,50 @@ __subsf3(float x,float y)
 {
 	float result;
 
+	if(isnan(x) || isnan(y))
+		return(nanf(NULL));
+
+	if(isinf(x) && isinf(y))
+	{
+		if(signbit(x) == 0)
+		{
+			if(signbit(y) == 0)
+			{
+				__set_errno(EDOM);
+				return(nanf(NULL));
+			}
+
+			// y is -infinity
+			return(__inff()); // +infinity
+		}
+
+		// x is -infinity
+		if(signbit(y) == 0)
+			return(-__inff()); // -infinity
+
+		// y is -infinity
+		__set_errno(EDOM);
+		return(nanf(NULL));
+	}
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(__inff());
+
+		// x is -infinity
+		return(-__inff());
+	}
+
+	if(isinf(y))
+	{
+		if(signbit(y) == 0)
+			return(-__inff());
+
+		// y is -infinity
+		return(__inff());
+	}
+
 	result = IEEESPSub(x,y);
 
 	return(result);

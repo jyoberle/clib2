@@ -41,10 +41,14 @@
 
 /****************************************************************************/
 
+// If x or y is NaN, a NaN shall be returned.
 float
 fdimf(float x,float y)
 {
 	float result;
+
+	if(isnan(x) || isnan(y))
+		return(nanf(NULL));
 
 	if(x > y)
 		result = x - y;

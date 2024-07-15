@@ -86,6 +86,23 @@ ivln2    =  1.4426950216e+00, /* 0x3fb8aa3b =1/ln2 */
 ivln2_h  =  1.4426879883e+00, /* 0x3fb8aa00 =16b 1/ln2*/
 ivln2_l  =  7.0526075433e-06; /* 0x36eca570 =1/ln2 tail*/
 
+// If x or y is a NaN, a NaN shall be returned (unless specified elsewhere in this description).
+// For any value of y (including NaN), if x is +1, 1.0 shall be returned.
+// For any value of x (including NaN), if y is ±0, 1.0 shall be returned.
+// For any odd integer value of y > 0, if x is ±0, ±0 shall be returned.
+// For y > 0 and not an odd integer, if x is ±0, +0 shall be returned.
+// If x is -1, and y is ±Inf, 1.0 shall be returned.
+// For |x| < 1, if y is -Inf, +Inf shall be returned.
+// For |x| > 1, if y is -Inf, +0 shall be returned.
+// For |x| < 1, if y is +Inf, +0 shall be returned.
+// For |x| > 1, if y is +Inf, +Inf shall be returned.
+// For y an odd integer < 0, if x is -Inf, -0 shall be returned.
+// For y < 0 and not an odd integer, if x is -Inf, +0 shall be returned.
+// For y an odd integer > 0, if x is -Inf, -Inf shall be returned.
+// For y > 0 and not an odd integer, if x is -Inf, +Inf shall be returned.
+// For y < 0, if x is +Inf, +0 shall be returned.
+//For y > 0, if x is +Inf, +Inf shall be returned.
+
 float
 powf(float x, float y)
 {
@@ -94,6 +111,15 @@ powf(float x, float y)
 	float y_1,t1,t2,r,s,t,u,v,w;
 	LONG i,j,k,yisint,n;
 	LONG hx,hy,ix,iy,is;
+
+
+	// For any value of y (including NaN), if x is +1, 1.0 shall be returned.
+	if(x == 1.0f)
+		return(1.0f);
+
+	// If x is -1, and y is ±Inf, 1.0 shall be returned.
+	if(x == -1.0f && isinf(y))
+		return(1.0f);
 
 	GET_FLOAT_WORD(hx,x);
 	GET_FLOAT_WORD(hy,y);

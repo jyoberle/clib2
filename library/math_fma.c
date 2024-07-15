@@ -41,6 +41,11 @@
 
 /****************************************************************************/
 
+// If x or y are NaN, a NaN shall be returned.
+// If x multiplied by y is an exact infinity and z is also an infinity but with the opposite sign, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If one of x and y is infinite, the other is zero, and z is not a NaN, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If one of x and y is infinite, the other is zero, and z is a NaN, a NaN shall be returned and a domain error may occur.
+// If x* y is not 0*Inf nor Inf*0 and z is a NaN, a NaN shall be returned.
 double
 fma(double x,double y,double z)
 {

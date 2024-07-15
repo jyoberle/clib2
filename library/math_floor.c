@@ -225,10 +225,18 @@ __floor(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
 double
 floor(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+		return(x); // +infinity or -infinity
 
 	result = __floor(x);
 

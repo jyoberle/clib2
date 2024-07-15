@@ -54,8 +54,49 @@
 // modified by JOB
 extern struct Library *MathIeeeDoubBasBase;
 
+// __nedf2 returns a nonzero value if either argument is NaN, or if a and b are unequal. 
 __attribute__((externally_visible)) LONG __nedf2(double a,double b)
 {
+	if(isnan(a) || isnan(b))
+		return(1L);
+
+	if(isinf(a) && isinf(b))
+	{
+		if(signbit(a) == 0)
+		{
+			if(signbit(b) == 0)
+				return(0L);
+
+			// b is -infinity
+			return(1L);
+		}
+
+		// a is -infinity
+		if(signbit(b) == 0)
+			return(-1L);
+		
+		// b is -infinity
+		return(0L);
+	}
+
+	if(isinf(a))
+	{
+		if(signbit(a) == 0)
+			return(1L);
+
+		// a is -infinity
+		return(-1L);
+	}
+
+	if(isinf(b))
+	{
+		if(signbit(b) == 0)
+			return(-1L);
+
+		// b is -infinity
+		return(1L);
+	}
+
 	return(IEEEDPCmp(a,b));
 }
 

@@ -55,11 +55,22 @@
 
 #define	SQRT_FLT_MAX	1.84467429742e+19  /* 0x5f7fffff */
 
+// If x or y is ±Inf, +Inf shall be returned (even if one of x or y is NaN).
+// If x or y is NaN, and the other is not ±Inf, a NaN shall be returned.
 float
 hypotf(float x, float y)
 {
 	float a=x,b=y,t1,t2,w;
 	LONG j,ha,hb;
+
+	if(isinf(x))
+		return(__inff());
+
+	if(isinf(y))
+		return(__inff());
+
+	if((isnan(x) && !isinf(y)) || (isnan(y) && !isinf(x)))
+		return(nanf(NULL));
 
 	if (isunordered(x,y))
 		return (x-x)/(y-y);

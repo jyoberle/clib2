@@ -41,10 +41,14 @@
 
 /****************************************************************************/
 
+// __fixunssfsi converts a to a signed integer, rounding toward zero.
 __attribute__((externally_visible)) unsigned long
 __fixunssfsi(float x)
 {
 	signed long result;
+
+	if(isnan(x) || isinf(x))
+		return(0L);
 
 	if(x < 0.0)
 		result = 0;

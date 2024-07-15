@@ -72,12 +72,88 @@ extern double __ceil(double x);
 
 /****************************************************************************/
 
-// modified by JOB
-extern struct Library *MathIeeeDoubBasBase;
+// Using same code as with option PPC_FLOATING_POINT_SUPPORT to get ceil(0) = 0
+static const double huge = 1.0e300;
 
-__attribute__((externally_visible)) double __ceil(double a)
+//extern struct Library *MathIeeeDoubBasBase;
+
+__attribute__((externally_visible)) double __ceil(double x)
 {
-	return(IEEEDPCeil(a));
+//	return(IEEEDPCeil(a));
+	int i0,i1,j0;
+	unsigned int i,j;
+
+	EXTRACT_WORDS(i0,i1,x);
+
+	j0 = ((i0>>20)&0x7ff)-0x3ff;
+
+	if(j0<20) 
+	{
+	    if(j0<0) 
+		{
+			if(huge+x>0.0) 
+			{
+				if(i0<0) 
+				{
+					i0=0x80000000;
+					i1=0;
+				} 
+				else if((i0|i1)!=0) 
+				{ 
+					i0=0x3ff00000;
+					i1=0;
+				}
+			}
+	    } 
+		else 
+		{
+			i = (0x000fffff)>>j0;
+			if(((i0&i)|i1)==0) 
+				return x;
+			if(huge+x>0.0) 
+			{	
+				if(i0>0) 
+					i0 += (0x00100000)>>j0;
+				i0 &= (~i); i1=0;
+			}
+	    }
+	} 
+	else if (j0>51) 
+	{
+	    if(j0==0x400) 
+			return x+x;
+	    else 
+			return x;
+	}
+	else 
+	{
+	    i = ((unsigned int)(0xffffffff))>>(j0-20);
+
+	    if((i1&i)==0) 
+			return x;
+
+	    if(huge+x>0.0)
+		{
+			
+			if(i0>0)
+			{
+				if(j0==20)
+					i0+=1; 
+				else 
+				{
+					j = i1 + (1<<(52-j0));
+					if(j<i1) 
+						i0+=1;	
+					i1 = j;
+				}
+			}
+			i1 &= (~i);
+	    }
+	}
+
+	INSERT_WORDS(x,i0,i1);
+
+	return x;
 }
 
 /****************************************************************************/
@@ -224,10 +300,18 @@ __ceil(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
 double
 ceil(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+		return(x);
 
 	result = __ceil(x);
 

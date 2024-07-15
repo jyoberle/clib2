@@ -68,6 +68,10 @@ Q3  =  -7.9365076090e-05, /* 0xb8a670cd */
 Q4  =   4.0082177293e-06, /* 0x36867e54 */
 Q5  =  -2.0109921195e-07; /* 0xb457edbb */
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0, ±0 shall be returned.
+// If x is -Inf, -1 shall be returned.
+// If x is +Inf, x shall be returned.
 float
 expm1f(float x)
 {

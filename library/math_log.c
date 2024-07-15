@@ -228,10 +228,34 @@ __log(double x)
 
 /****************************************************************************/
 
+// If x is ±0, a pole error shall occur and log(), logf(), and logl() shall return -HUGE_VAL, -HUGE_VALF, and -HUGE_VALL, respectively.
+// If x is NaN, a NaN shall be returned.
+// If x is 1, +0 shall be returned.
+// If x is +Inf, x shall be returned.
+// For finite values of x that are less than 0, or if x is -Inf, a domain error shall occur, and either a NaN or an implementation-defined value shall be returned.
 double
 log(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(__inf());
+
+		// x is -infinity
+		__set_errno(ERANGE);
+		result = nan(NULL);
+	}
+
+	if(fpclassify(x) == FP_ZERO)
+	{
+		__set_errno(ERANGE);
+		return(-__inf());
+	}
 
 	if(x > 0)
 	{
@@ -241,7 +265,8 @@ log(double x)
 	{
 		__set_errno(ERANGE);
 
-		result = -__inf();
+		//result = -__inf();
+		result = nan(NULL); // to be compatible with logf
 	}
 
 	return(result);

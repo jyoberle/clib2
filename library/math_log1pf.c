@@ -67,6 +67,11 @@ Lp7 = 1.4798198640e-01; /* 3E178897 */
 
 static const float zero = 0.0;
 
+// If x is -1, a pole error shall occur and log1p(), log1pf(), and log1pl() shall return -HUGE_VAL, -HUGE_VALF, and -HUGE_VALL, respectively.
+// If x is NaN, a NaN shall be returned.
+// If x is 1, +0 shall be returned.
+// If x is +Inf, x shall be returned.
+// For finite values of x that are less than -1, or if x is -Inf, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
 float
 log1pf(float x)
 {

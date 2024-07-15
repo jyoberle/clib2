@@ -166,10 +166,21 @@ __cos(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, a domain error shall occur, and a NaN shall be returned.
 double
 cos(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
 
 	result = __cos(x);
 

@@ -46,6 +46,9 @@ __fixsfsi(float x)
 {
 	signed long result;
 
+	if(isnan(x) || isinf(x))
+		return(0L);
+
 	result = IEEESPFix(x);
 
 	return(result);

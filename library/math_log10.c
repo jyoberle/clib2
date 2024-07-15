@@ -170,10 +170,34 @@ __log10(double x)
 
 /****************************************************************************/
 
+// If x is ±0, a pole error shall occur and log10(), log10f(), and log10l() shall return -HUGE_VAL, -HUGE_VALF, and -HUGE_VALL, respectively.
+// If x is NaN, a NaN shall be returned.
+// If x is 1, +0 shall be returned.
+// If x is +Inf, x shall be returned.
+// For finite values of x that are less than 0, or if x is -Inf, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
 double
 log10(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		 if(signbit(x) == 0)
+			return(__inf());
+
+		// x is -infinity
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
+
+	if(fpclassify(x) == FP_ZERO)
+	{
+		__set_errno(ERANGE);
+		return(-__inf());
+	}
 
 	if(x > 0)
 	{
@@ -183,7 +207,8 @@ log10(double x)
 	{
 		__set_errno(ERANGE);
 
-		result = -__inf();
+		//result = -__inf();
+		result = nan(NULL); // to be compatiblw with log10f
 	}
 
 	return(result);

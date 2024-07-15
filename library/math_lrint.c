@@ -50,6 +50,9 @@
 
 /****************************************************************************/
 
+// If x is NaN, a domain error shall occur and an unspecified value is returned.
+// If x is +Inf, a domain error shall occur and an unspecified value is returned.
+// If x is -Inf, a domain error shall occur and an unspecified value is returned.
 long int
 lrint(double x)
 {

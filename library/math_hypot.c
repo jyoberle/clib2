@@ -163,10 +163,21 @@ __hypot(double x,double y)
 
 /****************************************************************************/
 
+// If x or y is ±Inf, +Inf shall be returned (even if one of x or y is NaN).
+// If x or y is NaN, and the other is not ±Inf, a NaN shall be returned.
 double
 hypot(double x,double y)
 {
 	double result;
+
+	if(isinf(x))
+		return(__inf());
+
+	if(isinf(y))
+		return(__inf());
+
+	if((isnan(x) && !isinf(y)) || (isnan(y) && !isinf(x)))
+		return(nan(NULL));
 
 	result = __hypot(x,y);
 

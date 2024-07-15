@@ -136,10 +136,13 @@ __modf(double x, double *iptr)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned, and *iptr shall be set to a NaN.
+// If x is ±Inf, ±0 shall be returned, and *iptr shall be set to ±Inf.
 double
 modf(double x,double *nptr)
 {
 	double result;
+	volatile double result_zero; // to avoid optimisation from the compiler
 
 	assert( nptr != NULL );
 
@@ -154,6 +157,26 @@ modf(double x,double *nptr)
 		}
 	}
 	#endif /* CHECK_FOR_NULL_POINTERS */
+
+	if(isnan(x))
+	{
+		*nptr = nan(NULL);
+    	return(nan(NULL));
+	}
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+		{
+			*nptr = __inf();
+			return(0.0);
+		}
+
+		// x is -infinity
+		*nptr = -__inf();
+		result_zero = -0.0;
+		return(result_zero);
+	}
 
 	result = __modf(x,nptr);
 

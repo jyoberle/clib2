@@ -55,6 +55,8 @@
 
 static const float one = 1.0, half=0.5, huge = 1.0e30;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, +Inf shall be returned.
 float
 coshf(float x)
 {

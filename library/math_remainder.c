@@ -59,6 +59,17 @@ remainder(double x, double p)
 	ULONG sx,lx,lp;
 	double p_half;
 
+	// If x or y is NaN, a NaN shall be returned.
+	if(isnan(x) || isnan(p))
+		return(nan(NULL));
+
+	// If x is infinite or y is 0 and the other is non-NaN, a domain error shall occur, and a NaN shall be returned.
+	if(isinf(x) || (fpclassify(p) == FP_ZERO))
+	{
+		__set_errno(EDOM);
+		return(nan(NULL));
+	}
+
 	EXTRACT_WORDS(hx,lx,x);
 	EXTRACT_WORDS(hp,lp,p);
 	sx = hx&0x80000000U;

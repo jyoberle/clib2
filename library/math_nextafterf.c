@@ -52,6 +52,8 @@
 
 /****************************************************************************/
 
+// If x is finite and the correct function value would overflow, a range error shall occur and ±HUGE_VAL, ±HUGE_VALF, and ±HUGE_VALL (with the same sign as x)
+// If x or y is NaN, a NaN shall be returned.
 float
 nextafterf(float x, float y)
 {

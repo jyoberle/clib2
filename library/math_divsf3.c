@@ -45,6 +45,76 @@ __attribute__((externally_visible)) float
 __divsf3(float x,float y)
 {
 	float result;
+	volatile float result_zero; // to avoid optimisation from the compiler
+
+	if(isnan(x) || isnan(y))
+		return(nanf(NULL));
+
+	if((isinf(x) && isinf(y))
+		|| ((fpclassify(x) == FP_ZERO) && (fpclassify(y) == FP_ZERO)))
+	{
+		__set_errno(EDOM);
+		return(nanf(NULL));
+	}
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+		{
+			if(signbit(y) == 0)
+				return(__inff()); // +infinity
+
+			// y < 0
+			return(-__inff()); // -infinity
+		}
+
+		// x is -infinity
+		if(signbit(y) == 0)
+			return(-__inff()); /// -infinity
+
+		// y < 0
+		return(__inff()); // +infinity
+	}
+
+	if(isinf(y))
+	{
+		if(signbit(y) == 0)
+		{
+			if(signbit(x) == 0)
+				return(0.0f);
+
+			// x < 0
+			result_zero = -0.0f;
+			return(result_zero);
+		}
+
+		// y is -infinity
+		if(signbit(x) == 0)
+		{
+			result_zero = -0.0f;
+			return(result_zero);
+		}
+
+		return(0.0f);
+	}
+
+	if((fpclassify(y) == FP_ZERO) && (signbit(y) == 0))
+	{
+		if(signbit(x) == 0)
+			return(__inff());
+
+		// x < 0
+		return(-__inff());
+	}
+
+	if((fpclassify(y) == FP_ZERO) && (signbit(y) != 0))
+	{
+		if(signbit(x) == 0)
+			return(-__inff());
+
+		// x < 0
+		return(__inff());
+	}
 
 	result = IEEESPDiv(x,y);
 

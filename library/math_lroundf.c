@@ -58,6 +58,12 @@ lroundf(float x)
   long int result;
   LONG sign;
 
+  if(isnan(x) || isinf(x))
+  {
+    __set_errno(EDOM);
+    return(0L);
+  }
+
   GET_FLOAT_WORD (w, x);
   exponent_less_127 = ((w & 0x7f800000) >> 23) - 127;
   sign = (w & 0x80000000) != 0 ? -1 : 1;

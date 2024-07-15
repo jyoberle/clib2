@@ -247,10 +247,24 @@ __atan(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, ±pi/2 shall be returned.
 double
 atan(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(M_PI_2);
+
+		// x is -infinite
+		return(-M_PI_2);
+	}
 
 	result = __atan(x);
 

@@ -149,9 +149,10 @@ int main(int argc, char **argv)
 	WORD i;
 
 	// We check if our program has been started by the workbench or by the shell
-	if (argc == 0) {
+	proc = (struct Process *)FindTask(NULL);
+
+	if (proc->pr_CLI == NULL) {
 		// We have been launched by workbench: we wait for the startup message
-		proc = (struct Process *)FindTask(NULL);
 		WaitPort(&proc->pr_MsgPort);
 		wbmsg = (struct WBStartup *)GetMsg(&proc->pr_MsgPort);
 	}

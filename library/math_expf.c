@@ -71,6 +71,9 @@ P3   =  6.6137559770e-05, /* 0x388ab355 */
 P4   = -1.6533901999e-06, /* 0xb5ddea0e */
 P5   =  4.1381369442e-08; /* 0x3331bb4c */
 
+// If x is NaN, a NaN shall be returned.
+// If x is -Inf, +0 shall be returned.
+// If x is +Inf, x shall be returned.
 float
 expf(float x)
 {

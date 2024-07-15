@@ -85,6 +85,8 @@ static const float
 one   = 1.0,
 huge  = 1.0e30;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, ±pi/2 shall be returned.
 float
 atanf(float x)
 {

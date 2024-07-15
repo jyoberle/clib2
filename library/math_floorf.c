@@ -43,6 +43,8 @@
 
 static const float huge = 1.0e30;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
 float
 floorf(float x)
 {

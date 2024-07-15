@@ -94,12 +94,16 @@ __logb(double x)
 
 /****************************************************************************/
 
+// If x is ±0, logb(), logbf(), and logbl() shall return -HUGE_VAL, -HUGE_VALF, and -HUGE_VALL, respectively.
+// If x is NaN, a NaN shall be returned.
+// If x is 1, +0 shall be returned.
+// If x is +Inf, x shall be returned.
 double
 logb(double x)
 {
 	double result;
 
-	if(x == 0.0)
+	if(fpclassify(x) == FP_ZERO)
 	{
 		result = -__inf();
 		goto out;

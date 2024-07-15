@@ -54,8 +54,18 @@
 // modified by JOB
 extern struct Library *MathIeeeDoubBasBase;
 
+// __negdf2 returns the negation of a. It simply flips the sign bit, so it can produce negative zero and negative NaN. 
 __attribute__((externally_visible)) double __negdf2(double a)
 {
+	union ieee_double x;
+
+	if(isnan(a) || isinf(a))
+	{
+		x.value = a;
+		x.raw[0] ^= 0x80000000;
+		return(x.value);
+	}
+
 	return(IEEEDPNeg(a));
 }
 

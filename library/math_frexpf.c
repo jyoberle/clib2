@@ -55,6 +55,9 @@
 
 static const float two25 =  3.3554432000e+07; /* 0x4c000000 */
 
+// If num is NaN, a NaN shall be returned, and the value of *exp is unspecified.
+// If num is ±0, ±0 shall be returned, and the value of *exp shall be 0.
+// If num is ±Inf, num shall be returned, and the value of *exp is unspecified.
 float
 frexpf(float x, int *eptr)
 {

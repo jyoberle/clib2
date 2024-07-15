@@ -53,11 +53,22 @@
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, a domain error shall occur, and a NaN shall be returned.
 float
 sinf(float x)
 {
 	float y[2],z=0.0;
 	LONG n,ix;
+
+	if(isnan(x))
+		return(nanf(NULL));
+
+	if(isinf(x))
+	{
+		__set_errno(EDOM);
+		return(nanf(NULL));
+	}
 
 	GET_FLOAT_WORD(ix,x);
 

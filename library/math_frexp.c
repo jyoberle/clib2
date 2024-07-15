@@ -178,6 +178,9 @@ __frexp(double x,int * eptr)
 
 /****************************************************************************/
 
+// If num is NaN, a NaN shall be returned, and the value of *exp is unspecified.
+// If num is ±0, ±0 shall be returned, and the value of *exp shall be 0.
+// If num is ±Inf, num shall be returned, and the value of *exp is unspecified.
 double
 frexp(double x,int *nptr)
 {
@@ -197,13 +200,19 @@ frexp(double x,int *nptr)
 	}
 	#endif /* CHECK_FOR_NULL_POINTERS */
 
-	if(x != 0.0)
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+		return(x);
+
+	if(fpclassify(x) != FP_ZERO)
 	{
 		result = __frexp(x,nptr);
 	}
 	else
 	{
-		result = 0.0;
+		result = x; // ±0
 
 		(*nptr) = 0;
 	}

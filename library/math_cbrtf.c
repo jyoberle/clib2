@@ -64,6 +64,8 @@ E =  1.4142856598e+00, /* 99/70     = 0x3fb50750 */
 F =  1.6071428061e+00, /* 45/28     = 0x3fcdb6db */
 G =  3.5714286566e-01; /* 5/14      = 0x3eb6db6e */
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
 float
 cbrtf(float x)
 {

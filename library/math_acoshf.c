@@ -57,11 +57,16 @@ static const float
 one	= 1.0,
 ln2	= 6.9314718246e-01;  /* 0x3f317218 */
 
+// For finite values of x < 1, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If x is NaN, a NaN shall be returned.
+// If x is +Inf, +Inf shall be returned
+// If x is -Inf, a domain error shall occur, and a NaN shall be returned.
 float
 acoshf(float x)
 {	
 	float t;
 	LONG hx;
+
 	GET_FLOAT_WORD(hx,x);
 	if(hx<0x3f800000) {		/* x < 1 */
 	    return (x-x)/(x-x);

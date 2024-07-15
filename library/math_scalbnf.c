@@ -65,6 +65,9 @@ twom25  =  2.9802322388e-08,	/* 0x33000000 */
 huge   = 1.0e+30,
 tiny   = 1.0e-30;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
+// If n is 0, x shall be returned. 
 float
 scalbnf (float x, int n)
 {

@@ -166,10 +166,24 @@ __tanh(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, ±1 shall be returned.
 double
 tanh(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(1.0);
+
+		// x is -infinity
+		return(-1.0);
+	}
 
 	result = __tanh(x);
 

@@ -55,6 +55,17 @@ remquo(double x,double y,int * quo)
   int mswy;
   double x_over_y;
 
+  // If x or y is NaN, a NaN shall be returned.
+  if(isnan(x) || isnan(y))
+    return(nan(NULL));
+
+  // If x is ±Inf or y is zero and the other argument is non-NaN, a domain error shall occur, and a NaN shall be returned.
+  if(isinf(x) || (fpclassify(y) == FP_ZERO))
+  {
+    __set_errno(EDOM);
+    return(nan(NULL));
+  }
+
   GET_HIGH_WORD(mswx, x);
   GET_HIGH_WORD(mswy, y);
 

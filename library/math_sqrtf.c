@@ -55,6 +55,10 @@
 
 static	const float	one	= 1.0, tiny=1.0e-30;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or +Inf, x shall be returned.
+// If x is -Inf, a domain error shall occur, and a NaN shall be returned.
+// For finite values of x < -0, a domain error shall occur, and  either a NaN (if supported), or an implementation-defined value shall be returned.
 float
 sqrtf(float x)
 {
@@ -62,6 +66,21 @@ sqrtf(float x)
 	LONG	sign = (LONG)0x80000000U; 
 	ULONG r;
 	LONG ix,s,q,m,t,i;
+
+	if(isinf(x))
+	{
+		// If x is ±0 or +Inf, x shall be returned.
+		if(signbit(x) == 0)
+		{
+			return(__inff());
+		}
+		else
+		{
+			// If x is -Inf, a domain error shall occur, and a NaN shall be returned.
+			__set_errno(EDOM);
+			return(nanf(NULL));
+		}
+	}
 
 	GET_FLOAT_WORD(ix,x);
 

@@ -55,11 +55,14 @@ one =  1.00000000000000000000e+00, /* 0x3FF00000, 0x00000000 */
 ln2 =  6.93147180559945286227e-01, /* 0x3FE62E42, 0xFEFA39EF */
 huge=  1.00000000000000000000e+300; 
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0, or ±Inf, x shall be returned.
 double
 asinh(double x)
 {	
 	double t,w;
 	LONG hx,ix;
+
 	GET_HIGH_WORD(hx,x);
 	ix = hx&0x7fffffff;
 	if(ix>=0x7ff00000) return x+x;	/* x is inf or NaN */

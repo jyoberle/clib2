@@ -42,10 +42,25 @@
 /****************************************************************************/
 
 // modified by JOB
+// __eqsf2 returns zero if neither argument is NaN, and a and b are equal.
 __attribute__((externally_visible)) LONG
 __eqsf2(float x,float y)
 {
 	LONG result;
+
+	if(isnan(x) || isnan(y))
+		return(1L);
+
+	if(isinf(x) && isinf(y))
+	{
+		if((signbit(x) == 0 && signbit(y) == 0) || (signbit(x) == 1 && signbit(y) == 1))
+			return(0L);
+
+		return(1L);
+	}
+
+	if(isinf(x) || isinf(y))
+		return(1L);
 
 	result = IEEESPCmp(x,y);
 

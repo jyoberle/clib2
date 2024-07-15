@@ -41,9 +41,25 @@
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0, 1 shall be returned.
+// If x is -Inf, +0 shall be returned.
+// If x is +Inf, x shall be returned.
 double
 exp2(double x)
 {
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(__inf());
+
+		// x is -infinity
+		return(0.0); 
+	}
+
 	return(pow(2.0, x));
 }
 

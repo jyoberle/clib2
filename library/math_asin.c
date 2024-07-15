@@ -215,6 +215,9 @@ __asin(double x)
 
 /****************************************************************************/
 
+// For finite values of x not in the range [-1,1], a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, a domain error shall occur, and a NaN shall be returned.
 double
 asin(double x)
 {
@@ -226,7 +229,8 @@ asin(double x)
 	}
 	else
 	{
-		result = 0;
+		// result = 0;
+		result = nan(NULL);  // return nan to be consistent with asinf
 		__set_errno(EDOM);
 	}
 

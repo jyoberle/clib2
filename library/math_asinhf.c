@@ -58,11 +58,14 @@ one =  1.0000000000e+00, /* 0x3F800000 */
 ln2 =  6.9314718246e-01, /* 0x3f317218 */
 huge=  1.0000000000e+30; 
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0, or ±Inf, x shall be returned.
 float
 asinhf(float x)
 {	
 	float t,w;
 	LONG hx,ix;
+
 	GET_FLOAT_WORD(hx,x);
 	ix = hx&0x7fffffff;
 	if(ix>=0x7f800000) return x+x;	/* x is inf or NaN */

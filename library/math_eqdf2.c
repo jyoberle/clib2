@@ -54,8 +54,23 @@
 // modified by JOB
 extern struct Library *MathIeeeDoubBasBase;
 
+// __eqdf2 returns zero if neither argument is NaN, and a and b are equal. 
 __attribute__((externally_visible)) LONG __eqdf2(double a,double b)
 {
+	if(isnan(a) || isnan(b))
+		return(1L);
+
+	if(isinf(a) && isinf(b))
+	{
+		if((signbit(a) == 0 && signbit(b) == 0) || (signbit(a) == 1 && signbit(b) == 1))
+			return(0L);
+
+		return(1L);
+	}
+
+	if(isinf(a) || isinf(b))
+		return(1L);
+
 	return(IEEEDPCmp(a,b));
 }
 

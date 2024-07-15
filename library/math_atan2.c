@@ -69,6 +69,27 @@ __atan2(double y,double x)
 	const double pi_over_2 = pi / 2.0;
 	double result;
 
+	if(x == 0 && y== 0)
+		return(0.0);
+
+	if(y == 0)
+	{
+		if(x > 0)
+			return(0.0);
+
+		// x < 0
+		return(pi);
+	}
+
+	if(x == 0)
+	{
+		if(y > 0)
+			return(pi_over_2);
+
+		// y < 0
+		return(-pi_over_2);
+	}
+
 	if(x > 0.0)
 	{
 		if(y > 0.0)
@@ -318,10 +339,69 @@ __atan2(double y,double x)
 
 /****************************************************************************/
 
+// If either x or y is NaN, a NaN shall be returned.
+// If y is ±0 and x is +0, ±0 shall be returned.
+// For finite values of ± y > 0, if x is -Inf, ± shall be returned.
+// For finite values of ± y > 0, if x is +Inf, ±0 shall be returned.
+// For finite values of x, if y is ±Inf, ±/2 shall be returned.
+// If y is ±Inf and x is -Inf, ±3/4 shall be returned.
+// If y is ±Inf and x is +Inf, ±/4 shall be returned.
 double
 atan2(double y,double x)
 {
 	double result;
+	volatile double result_zero; // to avoid optimisation from the compiler
+
+	if(isnan(x) || isnan(y))
+		return(nan(NULL));
+
+	if(isinf(x) && isinf(y))
+	{
+		if(signbit(x) == 0)
+		{
+			if(signbit(y) == 0)
+				return(M_PI_4);
+
+			// y is -infinity
+			return(-M_PI_4);
+		}
+
+		// x is -infinity
+		if(signbit(y) == 0)
+			return(3.0*M_PI_4);
+
+		// y is -infinity
+		return(-3.0*M_PI_4);
+	}
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+		{
+			if(y >= 0)
+				return(0.0);
+
+			// y < 0
+			result_zero = -0.0;
+			return(result_zero);
+		}
+
+		// x is -infinity
+		if(y >= 0)
+			return(M_PI);
+
+		// y < 0
+		return(-M_PI);
+	}
+
+	if(isinf(y))
+	{
+		if(signbit(y) == 0)
+			return(M_PI_2);
+
+		// y is -infinity
+		return(-M_PI_2);
+	}
 
 	result = __atan2(y,x);
 

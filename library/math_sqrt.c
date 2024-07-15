@@ -229,10 +229,33 @@ __sqrt(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or +Inf, x shall be returned.
+// If x is -Inf, a domain error shall occur, and a NaN shall be returned.
+// For finite values of x < -0, a domain error shall occur, and  either a NaN (if supported), or an implementation-defined value shall be returned.
 double
 sqrt(double x)
 {
 	double result;
+
+	// If x is NaN, a NaN shall be returned.
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		// If x is ±0 or +Inf, x shall be returned.
+		if(signbit(x) == 0)
+		{
+			return(__inf());
+		}
+		else
+		{
+			// If x is -Inf, a domain error shall occur, and a NaN shall be returned.
+			__set_errno(EDOM);
+			return(nan(NULL));
+		}
+	}
 
 	if(x >= 0.0)
 	{
@@ -240,7 +263,8 @@ sqrt(double x)
 	}
 	else
 	{
-		result = 0;
+		//result = 0;
+		result = nan(NULL); // modified by JOB: to be coherent with sqrtf
 		__set_errno(EDOM);
 	}
 

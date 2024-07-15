@@ -57,10 +57,15 @@ static const float one = 1.0, huge = 1e30;
 
 /****************************************************************************/
 
+// If x is ±1, a pole error shall occur, and atanh(), atanhf(), and atanhl() shall return the value of the macro HUGE_VAL, HUGE_VALF, and HUGE_VALL, respectively, with the same sign as the correct value of the function.
+// For finite |x|>1, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, a domain error shall occur, and a NaN shall be returned.
 float atanhf(float x)
 {
 	float t;
 	LONG hx,ix;
+
 	GET_FLOAT_WORD(hx,x);
 	ix = hx&0x7fffffff;
 	if (ix>0x3f800000) 		/* |x|>1 */

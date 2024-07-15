@@ -64,6 +64,108 @@
 
 /****************************************************************************/
 
+#define OPTION_TIME_DELAY_REENTRANT 1
+
+#if OPTION_TIME_DELAY_REENTRANT
+unsigned int __time_delay(unsigned long seconds,unsigned long microseconds)
+{
+	struct MsgPort *timer_port;
+	struct timerequest *timer_request;
+	ULONG signals_to_wait_for;
+	ULONG timer_signal;
+	struct timeval tv;
+	ULONG signals;
+	ULONG seconds_then;
+	ULONG seconds_now;
+	struct Library *TimerBase;
+	unsigned int result = 0;
+
+	ENTER();
+
+	SHOWVALUE(seconds);
+
+	if(__check_abort_enabled)
+		__check_abort();
+
+	if((seconds > 0 || microseconds > 0))
+	{
+		if((timer_port = CreateMsgPort()) != NULL)
+		{
+			if((timer_request = (struct timerequest *)CreateIORequest(timer_port,sizeof(*timer_request))) != NULL)
+			{
+				if(OpenDevice(TIMERNAME,UNIT_VBLANK,(struct IORequest *)timer_request,0) == OK)
+				{
+					timer_request->tr_node.io_Command = TR_ADDREQUEST;
+					timer_request->tr_time.tv_secs = seconds;
+					timer_request->tr_time.tv_micro = microseconds;
+					TimerBase = (struct Library *)timer_request->tr_node.io_Device;
+					timer_signal = (1UL << timer_port->mp_SigBit);
+					signals_to_wait_for = timer_signal;
+					SetSignal(0,signals_to_wait_for);
+
+					if(__check_abort_enabled)
+						SET_FLAG(signals_to_wait_for,__break_signal_mask);
+
+					PROFILE_OFF();
+					GetSysTime(&tv);
+					PROFILE_ON();
+
+					seconds_then = tv.tv_secs + seconds;
+
+					SendIO((struct IORequest *)timer_request);
+
+					while(TRUE)
+					{
+						PROFILE_OFF();
+						signals = Wait(signals_to_wait_for);
+						PROFILE_ON();
+
+						if(FLAG_IS_SET(signals,__break_signal_mask))
+						{
+							ULONG seconds_now;
+
+							if(CheckIO((struct IORequest *)timer_request) == BUSY)
+								AbortIO((struct IORequest *)timer_request);
+
+							WaitIO((struct IORequest *)timer_request);
+
+							SetSignal(__break_signal_mask,__break_signal_mask);
+							__check_abort();
+
+							/* Now figure out how many seconds have elapsed and
+							how many would still remain. */
+							PROFILE_OFF();
+							GetSysTime(&tv);
+							PROFILE_ON();
+
+							seconds_now = tv.tv_secs;
+							if(seconds_now < seconds_then)
+								result = seconds_then - seconds_now;
+
+							break;
+						}
+
+						if(FLAG_IS_SET(signals,timer_signal))
+						{
+							WaitIO((struct IORequest *)timer_request);
+							break;
+						}
+					}
+
+					CloseDevice((struct IORequest *)timer_request);
+				}
+
+				DeleteIORequest(timer_request);
+			}
+
+			DeleteMsgPort(timer_port);
+		}
+	}
+
+	RETURN(result);
+	return(result);
+}
+#else
 unsigned int
 __time_delay(unsigned long seconds,unsigned long microseconds)
 {
@@ -157,3 +259,4 @@ __time_delay(unsigned long seconds,unsigned long microseconds)
 	RETURN(result);
 	return(result);
 }
+#endif

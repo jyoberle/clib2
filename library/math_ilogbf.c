@@ -53,6 +53,9 @@
 
 /****************************************************************************/
 
+// If x is 0, the value FP_ILOGB0 shall be returned.
+// If x is ±Inf, the value {INT_MAX} shall be returned.
+// If x is a NaN, the value FP_ILOGBNAN shall be returned.
 int
 ilogbf(float x)
 {

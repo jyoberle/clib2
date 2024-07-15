@@ -41,6 +41,8 @@
 
 /****************************************************************************/
 
+// If just one argument is a NaN, the other argument shall be returned.
+// If x and y are NaN, a NaN shall be returned.
 double
 fmax(double x,double y)
 {

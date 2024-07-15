@@ -61,6 +61,14 @@
 float
 rintf(float x)
 {
+	// If x is NaN, a NaN shall be returned.
+	if(isnan(x))
+		return(nanf(NULL));
+
+	// If x is ±0 or ±Inf, x shall be returned.
+	if((fpclassify(x) == FP_ZERO) || isinf(x))
+		return(x);
+
 	return (float) floor ( x + 0.5f );
 }
 

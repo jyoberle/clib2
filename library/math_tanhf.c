@@ -55,6 +55,8 @@
 
 static const float one=1.0, two=2.0, tiny = 1.0e-30;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, ±1 shall be returned.
 float
 tanhf(float x)
 {

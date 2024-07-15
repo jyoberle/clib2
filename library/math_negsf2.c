@@ -41,10 +41,19 @@
 
 /****************************************************************************/
 
+// __negsf2 returns the negation of a. It simply flips the sign bit, so it can produce negative zero and negative NaN. 
 __attribute__((externally_visible)) float
 __negsf2(float x)
 {
 	float result;
+	union ieee_single a;
+
+	if(isnan(x) || isinf(x))
+	{
+		a.value = x;
+		a.raw[0] ^= 0x80000000;
+		return(a.value);
+	}
 
 	result = IEEESPNeg(x);
 

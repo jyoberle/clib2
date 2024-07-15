@@ -41,6 +41,9 @@
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0, ±0 shall be returned.
+// If x is ±Inf, x shall be returned.
 double
 nearbyint(double x)
 {

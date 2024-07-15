@@ -41,6 +41,11 @@
 
 /****************************************************************************/
 
+// If x is ±0, a pole error shall occur and log2(), log2f(), and log2l() shall return -HUGE_VAL, -HUGE_VALF, and -HUGE_VALL, respectively.
+// If x is NaN, a NaN shall be returned.
+// If x is 1, +0 shall be returned.
+// If x is +Inf, x shall be returned.
+// For finite values of x that are less than 0, or if x is -Inf, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
 float
 log2f(float x)
 {

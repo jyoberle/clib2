@@ -56,6 +56,36 @@ tgamma(double x)
 	// modified by JOB
     double y;
 
+	// If x is ±0, tgamma(), tgammaf(), and tgammal() shall return ±HUGE_VAL, ±HUGE_VALF, and ±HUGE_VALL, respectively.
+	// On systems that support the IEC 60559 Floating-Point option, a pole error shall occur; otherwise, a pole error may occur.
+	if((fpclassify(x) == FP_ZERO) && (signbit(x) == 0))
+	{
+		__set_errno(ERANGE); // pole error
+		return(__inf());
+	}
+
+	if((fpclassify(x) == FP_ZERO) && (signbit(x) != 0))
+	{
+		__set_errno(ERANGE); // pole error
+		return(-__inf());
+	}
+
+	// If x is NaN, a NaN shall be returned.
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		// If x is +Inf, x shall be returned.
+		if(x > 0)
+			return(__inf());
+
+		// x is -infinity
+		// If x is -Inf, a domain error shall occur, and a NaN shall be returned.
+		__set_errno(EDOM);
+    	return(nan(NULL));
+	}
+
 	y = exp(lgamma(x));
 
 	return y;

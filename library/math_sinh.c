@@ -172,10 +172,24 @@ __sinh(double x)
 
 /****************************************************************************/
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
 double
 sinh(double x)
 {
 	double result;
+
+	if(isnan(x))
+		return(nan(NULL));
+
+	if(isinf(x))
+	{
+		if(signbit(x) == 0)
+			return(__inf());
+
+		// x is -infinity
+		return(-__inf());
+	}
 
 	result = __sinh(x);
 

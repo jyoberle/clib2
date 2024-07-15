@@ -55,12 +55,17 @@ static const double one = 1.0, huge = 1e300;
 
 /****************************************************************************/
 
+// If x is ±1, a pole error shall occur, and atanh(), atanhf(), and atanhl() shall return the value of the macro HUGE_VAL, HUGE_VALF, and HUGE_VALL, respectively, with the same sign as the correct value of the function.
+// For finite |x|>1, a domain error shall occur, and either a NaN (if supported), or an implementation-defined value shall be returned.
+// If x is NaN, a NaN shall be returned.
+// If x is ±Inf, a domain error shall occur, and a NaN shall be returned.
 double
 atanh(double x)
 {
 	double t;
 	LONG hx,ix;
 	ULONG lx;
+
 	EXTRACT_WORDS(hx,lx,x);
 	ix = hx&0x7fffffff;
 	if ((ix|((lx|(-lx))>>31))>0x3ff00000) /* |x|>1 */

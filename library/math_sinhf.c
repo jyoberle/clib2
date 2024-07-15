@@ -55,6 +55,8 @@
 
 static const float one = 1.0, shuge = 1.0e37;
 
+// If x is NaN, a NaN shall be returned.
+// If x is ±0 or ±Inf, x shall be returned.
 float
 sinhf(float x)
 {	

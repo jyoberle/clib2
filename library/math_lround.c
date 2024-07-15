@@ -50,6 +50,11 @@
 
 /****************************************************************************/
 
+//If x is NaN, a domain error shall occur and an unspecified value is returned.
+// If x is +Inf, a domain error shall occur and an unspecified value is returned.
+// If x is -Inf, a domain error shall occur and an unspecified value is returned.
+// If the correct value is positive and too large to represent as a long, an unspecified value shall be returned.
+// If the correct value is negative and too large to represent as a long, an unspecified value shall be returned.
 long int
 lround(double x)
 {
@@ -57,7 +62,13 @@ lround(double x)
   /* Most significant word, least significant word. */
   ULONG msw, lsw;
   long int result;
-  
+
+  if(isnan(x) || isinf(x))
+  {
+    __set_errno(EDOM);
+    return(0L);
+  }
+ 
   EXTRACT_WORDS(msw, lsw, x);
 
   /* Extract sign. */
